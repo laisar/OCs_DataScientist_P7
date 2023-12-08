@@ -1,5 +1,5 @@
 # OCs_DataScientist_P7
-Project carried out as part of the OpenClassrooms Data Scientist training - Project 7: Implement a scoring model
+Project carried out as part of the OpenClassrooms Data Scientist training - Project 7: __Implémentez un modèle de scoring__
 
 ## **Context**
 
