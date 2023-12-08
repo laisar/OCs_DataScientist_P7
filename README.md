@@ -9,7 +9,7 @@ The company therefore wishes to develop a classification algorithm based on vari
 
 "Prêt à dépenser" decides to develop an interactive dashboard so that customer relationship managers can both explain credit granting decisions as transparently as possible and also allow their customers to have access to their personal information and explore them easily.
 
-## **Mission **
+## **Mission**
 
 1. Build a scoring model that will automatically predict a customer's probability of bankruptcy.
 2. Build an interactive dashboard for customer relationship managers to interpret the predictions made by the model, and to improve the customer knowledge of customer relationship managers.
