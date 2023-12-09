@@ -253,17 +253,17 @@ with tab_information:
         with mygrid2[0][0]:
             st.write(str(selected_client))
             if((data.loc[data[str(selected_client)] == "Gender", "Client information"] == "Woman").any()):
-                image_path = "../streamlit/images/woman.png"
+                image_path = "images/woman.png"
                 image = Image.open(image_path)
                 st.image(image, use_column_width=False, caption='Woman')
             else:
-                image_path = "../streamlit/images/man.png"
+                image_path = "images/man.png"
                 image = Image.open(image_path)
                 st.image(image, use_column_width=False, caption='Man')
                 
         with mygrid2[0][1]:
             st.write("Owns a car")
-            image_path_car = "../streamlit/images/car.png"
+            image_path_car = "images/car.png"
             image_car = Image.open(image_path_car)
             if((data.loc[data[str(selected_client)] == "Owns a car", "Client information"] == "Yes").any()):
                 st.image(image_car, use_column_width=False, caption='Yes')
@@ -273,7 +273,7 @@ with tab_information:
                 
         with mygrid2[0][2]:
             st.write("Owns a real estate property")
-            image_path_prop = "../streamlit/images/house.png"
+            image_path_prop = "images/house.png"
             image_prop = Image.open(image_path_prop)
             if((data.loc[data[str(selected_client)] == "Owns a real estate property", "Client information"] == "Yes").any()):
                 st.image(image_prop, use_column_width=False, caption='Yes')
