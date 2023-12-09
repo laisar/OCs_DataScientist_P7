@@ -269,9 +269,10 @@ with tab_information:
             #image_path_car = "images/car.png"
             #image_car = Image.open(image_path_car)
             if((data.loc[data[str(selected_client)] == "Owns a car", "Client information"] == "Yes").any()):
-                st.image(image_car, use_column_width=False, caption='Yes')
+                st.write("")
+                #st.image(image_car, use_column_width=False, caption='Yes')
             else:
-                #image_car = image_car.convert('L')
+                image_car = image_car.convert('L')
                 #st.image(image_car, use_column_width=False, caption='No')  
                 
         with mygrid2[0][2]:
@@ -280,7 +281,8 @@ with tab_information:
             #image_prop = Image.open(image_path_prop)
             if((data.loc[data[str(selected_client)] == "Owns a real estate property", "Client information"] == "Yes").any()):
                 #st.image(image_prop, use_column_width=False, caption='Yes')
-            else:    
+            else:
+                st.write("")
                 #image_prop = image_prop.convert('L')
                 #st.image(image_prop, use_column_width=False, caption='No') 
 
