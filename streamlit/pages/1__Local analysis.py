@@ -27,6 +27,7 @@ import requests
 import json
 import urllib.request
 import joblib
+import os 
 #Options
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
@@ -254,7 +255,9 @@ with tab_information:
             st.write(str(selected_client))
             if((data.loc[data[str(selected_client)] == "Gender", "Client information"] == "Woman").any()):
                 image_path = "woman.png"
-                image = Image.open(image_path)
+                path = os.path.dirname(__file__)
+                my_file = path+'/woman.png'
+                image = Image.open(my_file)
                 st.image(image, use_column_width=False, caption='Woman')
             else:
                 image_path = "images/man.png"
