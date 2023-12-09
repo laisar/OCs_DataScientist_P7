@@ -199,17 +199,17 @@ st.write("")
 tab_global, tab_dependecy, tab_clients = st.tabs(["Global interpretation", "Dependency graph", "Similar clients"])
     
 # Make an API request to the FastAPI backend
-response = requests.get("http://54.198.181.125/api/clients")  # Replace with the actual URL of your FastAPI server
+response = requests.get("http://3.80.60.126/api/clients")  # Replace with the actual URL of your FastAPI server
 clients = response.json()
 my_list = clients["clientsId"]
 
 # Make an API request to the FastAPI backend
 choice = True
-response_repay = requests.get("http://54.198.181.125/api/predictions/list_clients?id=true")  # Replace with the actual URL of your FastAPI server
+response_repay = requests.get("http://3.80.60.126/api/predictions/list_clients?id=true")  # Replace with the actual URL of your FastAPI server
 clients_repay = response_repay.json()
 
 # Make an API request to the FastAPI backend
-response_dontrepay = requests.get("http://54.198.181.125/api/predictions/list_clients?id=false")  # Replace with the actual URL of your FastAPI server
+response_dontrepay = requests.get("http://3.80.60.126/api/predictions/list_clients?id=false")  # Replace with the actual URL of your FastAPI server
 clients_dontrepay = response_dontrepay.json()
 
 
@@ -283,16 +283,16 @@ with tab_clients:
     
     columns_to_drop = ["Gender", "Married", "Working", "Owns a car", "Owns a real estate property"]
     
-    similar_clients = requests.get(f"http://54.198.181.125/api/clients/similar_clients?id={selected_client}")
+    similar_clients = requests.get(f"http://3.80.60.126/api/clients/similar_clients?id={selected_client}")
     similar_clients = similar_clients.json()
-    client_info = requests.get(f"http://54.198.181.125/api/clients/clients_info/?id={selected_client}")
+    client_info = requests.get(f"http://3.80.60.126/api/clients/clients_info/?id={selected_client}")
     client_info = client_info.json()
     client_info = pd.DataFrame(client_info, index=['0'])
     fields = client_info.columns.tolist()
     list_clients = []
     
     for client in similar_clients:
-        client_info = requests.get(f"http://54.198.181.125/api/clients/clients_info/?id={client}")
+        client_info = requests.get(f"http://3.80.60.126/api/clients/clients_info/?id={client}")
         client_info = client_info.json()
         client_info = pd.DataFrame(client_info, index=['0'])
         data_fields = client_info.iloc[0].tolist()
