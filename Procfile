@@ -1,0 +1,1 @@
+web: gunicorn fastapi_predict:app
