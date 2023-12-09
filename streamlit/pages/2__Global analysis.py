@@ -41,7 +41,7 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 
 #Nom de la page
 st.set_page_config(
-    page_title= "Local analysis", 
+    page_title= "Global analysis", 
     page_icon= "📊",
     layout="wide"
     )
@@ -185,6 +185,8 @@ def make_grid(cols,rows):
 
 df_current_clients = pd.read_csv("../dataset_predict.csv")
 df_current_clients = df_current_clients.drop(columns=["SK_ID_CURR", "TARGET", "REPAY", "CLUSTER"])
+explainer = joblib.load("../models/shap_explainer.pckl")
+shap_values = explainer.shap_values(df_current_clients)
 
 st.write("") 
 
@@ -214,6 +216,63 @@ if selected_option == "Allow loan":
     selected_client = st.sidebar.selectbox("Select a customer: ", clients_repay)
 if selected_option == "Do not allow loan":
     selected_client = st.sidebar.selectbox("Select a customer: ", clients_dontrepay)
+    
+with tab_global:
+    fig = plt.figure(figsize=(25, 25))
+    plt.title("Global interpretation :\n Impact of each feature on prediction\n")
+    st_shap(shap.summary_plot(shap_values[1], 
+                             features=df_current_clients,
+                             feature_names=df_current_clients.columns,
+                             plot_size=(12, 16),
+                             cmap='PiYG_r',
+                             plot_type="dot",
+                             max_display=56,
+                             show = False))
+    plt.show()
+
+with tab_dependecy:
+    st.markdown("""
+             <h1 style="color:772b58;font-size:2.3em;font-style:italic;font-weight:700;margin:0px;">
+             Dependency graph</h1>
+             """, 
+             unsafe_allow_html=True)
+    st.write("We can get a deeper insight into the effect of each featur on the dataset with a dependency graph.")
+    st.write("The dependence plot allows variables to be analyzed in pairs, suggesting the possibility of observing interactions. The scatter plot represents a dependency between a variable (in x) and the shapley values (in y) colored by the most correlated variable.")
+
+
+    # Création et affichage du sélecteur des variables et des graphs de dépendance 
+
+    liste_variables = df_current_clients.columns.to_list()
+
+    col1, col2, = st.columns(2)  #division de la largeur de la page en 2 pour diminuer la taille du menu déroulant
+    with col1:
+        ID_var = st.selectbox("*Please select a variable from the drop-down menu 👇*", 
+                                 (liste_variables))
+        st.write("You have selected the variable :", ID_var)
+
+    fig = plt.figure(figsize=(12, 4))
+    ax1 = fig.add_subplot(121)
+    shap.dependence_plot(ID_var, 
+                     shap_values[1], 
+                     df_current_clients, 
+                     interaction_index=None,
+                     alpha = 0.5,
+                     x_jitter = 0.5,
+                     title= "Dependency graph",
+                     ax=ax1,
+                     show = False)
+    ax2 = fig.add_subplot(122)
+    shap.dependence_plot(ID_var, 
+                     shap_values[1], 
+                     df_current_clients, 
+                     interaction_index='auto',
+                     alpha = 0.5,
+                     x_jitter = 0.5,
+                     title= "Dependency and Interaction Graphs",
+                     ax=ax2,
+                     show = False)
+    fig.tight_layout()
+    st.pyplot(fig)
     
 with tab_clients:
     

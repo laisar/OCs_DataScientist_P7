@@ -1,6 +1,7 @@
 import io
 import os
-import json 
+import json
+import uvicorn 
 import gc
 import pandas as pd
 import numpy as np
@@ -23,12 +24,9 @@ app = FastAPI(
 ########################################################
 # Reading the csv
 ########################################################
-df_clients_to_predict = pd.read_csv("../dataset_predict.csv")
+df_clients_to_predict = pd.read_csv("dataset_predict.csv")
 #df_clients_to_predict_original = pd.read_csv("dataset_predict_original.csv")
-df_current_clients = pd.read_csv("../dataset_target.csv")
-# Deserialize SHAP explainer
-explainer = joblib.load("../models/shap_explainer.pckl")
-
+df_current_clients = pd.read_csv("dataset_target.csv")
 
 @app.get("/api/clients")
 async def clients_id():
@@ -53,7 +51,7 @@ async def predict(id: int):
         raise HTTPException(status_code=404, detail="client's id not found")
     else:
         # Loading the model
-        model = joblib.load("../models/lightgbm_model.pckl")
+        model = joblib.load("/models/lightgbm_model.pckl")
 
         threshold = 0.365
 
@@ -158,3 +156,6 @@ async def similar_clients(id: int):
     similar_clients = df_similar_clients["SK_ID_CURR"].tolist()
     
     return similar_clients
+
+if __name__ == '__main__':
+    uvicorn.run(app, host='127.0.0.1', port=8000) 
