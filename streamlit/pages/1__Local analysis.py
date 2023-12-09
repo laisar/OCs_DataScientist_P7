@@ -92,7 +92,7 @@ response = requests.get("http://54.198.181.125/api/clients")  # Replace with the
 clients = response.json()
 my_list = clients["clientsId"]
 
-explainer = pickle.load(open('shap_explainer.pckl', 'rb'))
+explainer = joblib.load("shap_explainer.pckl")
 
 # Make an API request to the FastAPI backend
 choice = True
