@@ -186,6 +186,8 @@ def make_grid(cols,rows):
 url_current = "https://github.com/laisar/OCs_DataScientist_P7/blob/master/dataset_predict_compressed.gz?raw=true"
 df_current_clients = pd.read_csv(url_current, compression='gzip', sep=',')
 df_current_clients = df_current_clients.drop(columns=["SK_ID_CURR", "TARGET", "REPAY", "CLUSTER"])
+
+path = ""
 path = os.path.dirname(__file__)
 my_file_shap = path+'/shap_explainer.pckl'
 explainer = joblib.load(my_file_shap)
