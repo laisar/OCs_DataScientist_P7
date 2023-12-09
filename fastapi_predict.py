@@ -167,6 +167,3 @@ async def similar_clients(id: int):
     similar_clients = df_similar_clients["SK_ID_CURR"].tolist()
     
     return similar_clients
-
-if __name__ == '__main__':
-    uvicorn.run(app, host='127.0.0.1', port=8000) 
