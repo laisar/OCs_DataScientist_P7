@@ -264,8 +264,8 @@ with tab_information:
                 
         with mygrid2[0][1]:
             st.write("Owns a car")
-                my_file_car = path+'/car.png'
-                image_car = Image.open(my_file_car)
+            my_file_car = path+'/car.png'
+            image_car = Image.open(my_file_car)
             if((data.loc[data[str(selected_client)] == "Owns a car", "Client information"] == "Yes").any()):
                 st.image(image_car, use_column_width=False, caption='Yes')
                 
@@ -275,8 +275,8 @@ with tab_information:
                 
         with mygrid2[0][2]:
             st.write("Owns a real estate property")
-                my_file_house = path+'/house.png'
-                image_house = Image.open(my_file_house)
+            my_file_house = path+'/house.png'
+            image_house = Image.open(my_file_house)
             if((data.loc[data[str(selected_client)] == "Owns a real estate property", "Client information"] == "Yes").any()):
                 st.image(image_house, use_column_width=False, caption='Yes')
                 
