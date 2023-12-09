@@ -119,11 +119,11 @@ client_probability = client_probability.json()
 client_info = requests.get(f"http://54.198.181.125/api/clients/clients_info/?id={selected_client}")
 client_info = client_info.json()
 
-client_shap = requests.get(f"http://54.198.181.125/api/clients/client?id={selected_client}")
-client_shap = client_shap.json()
-client_shap = pd.DataFrame(client_shap) 
+#client_shap = requests.get(f"http://54.198.181.125/api/clients/client?id={selected_client}")
+#client_shap = client_shap.json()
+#client_shap = pd.DataFrame(client_shap) 
 
-shap_values = explainer.shap_values(client_shap)
+#shap_values = explainer.shap_values(client_shap)
 
 #client_shap = requests.get(f"http://54.198.181.125/api/clients/shap/?id={selected_client}")
 #client_shap = client_shap.json()
@@ -284,8 +284,8 @@ with tab_information:
     with mygrid[1][0]:
         
         st.dataframe(data.set_index(data.columns[0]))
-      
-with tab_feature_importance:
+    
+    #with tab_feature_importance:
     #st.pyplot(shap.plots.force(explainer.expected_value[1], shap_values[1], client_shap, matplotlib=True))
 
     #shap.decision_plot(explainer.expected_value[1], shap_values[1], client_shap)
