@@ -260,6 +260,7 @@ with tab_information:
                 image = Image.open(my_file)
                 st.image(image, use_column_width=False, caption='Woman')
             else:
+                st.write("")
                 #image_path = "images/man.png"
                 #image = Image.open(image_path)
                 #st.image(image, use_column_width=False, caption='Man')
