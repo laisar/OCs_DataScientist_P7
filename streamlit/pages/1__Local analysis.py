@@ -92,7 +92,7 @@ response = requests.get("http://54.198.181.125/api/clients")  # Replace with the
 clients = response.json()
 my_list = clients["clientsId"]
 
-explainer = joblib.load("shap_explainer.pckl")
+#explainer = joblib.load("shap_explainer.pckl")
 
 # Make an API request to the FastAPI backend
 choice = True
@@ -286,9 +286,9 @@ with tab_information:
         st.dataframe(data.set_index(data.columns[0]))
       
 with tab_feature_importance:
-    st.pyplot(shap.plots.force(explainer.expected_value[1], shap_values[1], client_shap, matplotlib=True))
+    #st.pyplot(shap.plots.force(explainer.expected_value[1], shap_values[1], client_shap, matplotlib=True))
 
-    shap.decision_plot(explainer.expected_value[1], shap_values[1], client_shap)
+    #shap.decision_plot(explainer.expected_value[1], shap_values[1], client_shap)
 
-    st.pyplot()
+    #st.pyplot()
     #st.write(client_shap)
