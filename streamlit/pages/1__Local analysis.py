@@ -281,6 +281,7 @@ with tab_information:
             #image_path_prop = "images/house.png"
             #image_prop = Image.open(image_path_prop)
             if((data.loc[data[str(selected_client)] == "Owns a real estate property", "Client information"] == "Yes").any()):
+                st.write("")
                 #st.image(image_prop, use_column_width=False, caption='Yes')
             else:
                 st.write("")
