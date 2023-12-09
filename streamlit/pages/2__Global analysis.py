@@ -182,10 +182,11 @@ def make_grid(cols,rows):
         with st.container():
             grid[i] = st.columns(rows)
     return grid
-
-df_current_clients = pd.read_csv("../dataset_predict_compressed.gz", compression='gzip', sep=',')
+url_current = "https://github.com/laisar/OCs_DataScientist_P7/blob/master/dataset_predict_compressed.gz?raw=true"
+df_current_clients = pd.read_csv(url_current, compression='gzip', sep=',')
 df_current_clients = df_current_clients.drop(columns=["SK_ID_CURR", "TARGET", "REPAY", "CLUSTER"])
-explainer = joblib.load("./models/shap_explainer.pckl")
+url_shap = "https://github.com/laisar/OCs_DataScientist_P7/blob/master/models/shap_explainer.pckl?raw=true"
+explainer = joblib.load(url_shap)
 shap_values = explainer.shap_values(df_current_clients)
 
 st.write("") 
