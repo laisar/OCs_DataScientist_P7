@@ -51,7 +51,7 @@ async def predict(id: int):
         raise HTTPException(status_code=404, detail="client's id not found")
     else:
         # Loading the model
-        model = joblib.load("/models/lightgbm_model.pckl")
+        model = joblib.load("models/lightgbm_model.pckl")
 
         threshold = 0.365
 
