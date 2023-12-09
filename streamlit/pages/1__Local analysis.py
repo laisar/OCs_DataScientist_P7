@@ -88,7 +88,7 @@ st.write("")
 tab_score, tab_information, tab_feature_importance = st.tabs(["Client score", "Client information", "Client feature importance"])
 
 # Make an API request to the FastAPI backend
-response = requests.get("http://127.0.0.1:8000/api/clients")  # Replace with the actual URL of your FastAPI server
+response = requests.get("http://54.198.181.125/api/clients")  # Replace with the actual URL of your FastAPI server
 clients = response.json()
 my_list = clients["clientsId"]
 
@@ -96,11 +96,11 @@ explainer = joblib.load("../models/shap_explainer.pckl")
 
 # Make an API request to the FastAPI backend
 choice = True
-response_repay = requests.get("http://127.0.0.1:8000/api/predictions/list_clients?id=true")  # Replace with the actual URL of your FastAPI server
+response_repay = requests.get("http://54.198.181.125/api/predictions/list_clients?id=true")  # Replace with the actual URL of your FastAPI server
 clients_repay = response_repay.json()
 
 # Make an API request to the FastAPI backend
-response_dontrepay = requests.get("http://127.0.0.1:8000/api/predictions/list_clients?id=false")  # Replace with the actual URL of your FastAPI server
+response_dontrepay = requests.get("http://54.198.181.125/api/predictions/list_clients?id=false")  # Replace with the actual URL of your FastAPI server
 clients_dontrepay = response_dontrepay.json()
 
 
@@ -113,19 +113,19 @@ if selected_option == "Allow loan":
 if selected_option == "Do not allow loan":
     selected_client = st.sidebar.selectbox("Select a customer: ", clients_dontrepay)
 
-client_probability = requests.get(f"http://127.0.0.1:8000/api/predictions/clients/?id={selected_client}")
+client_probability = requests.get(f"http://54.198.181.125/api/predictions/clients/?id={selected_client}")
 client_probability = client_probability.json()
 
-client_info = requests.get(f"http://127.0.0.1:8000/api/clients/clients_info/?id={selected_client}")
+client_info = requests.get(f"http://54.198.181.125/api/clients/clients_info/?id={selected_client}")
 client_info = client_info.json()
 
-client_shap = requests.get(f"http://127.0.0.1:8000/api/clients/client?id={selected_client}")
+client_shap = requests.get(f"http://54.198.181.125/api/clients/client?id={selected_client}")
 client_shap = client_shap.json()
 client_shap = pd.DataFrame(client_shap) 
 
 shap_values = explainer.shap_values(client_shap)
 
-#client_shap = requests.get(f"http://127.0.0.1:8000/api/clients/shap/?id={selected_client}")
+#client_shap = requests.get(f"http://54.198.181.125/api/clients/shap/?id={selected_client}")
 #client_shap = client_shap.json()
 
 with tab_score:
