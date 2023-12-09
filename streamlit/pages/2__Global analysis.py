@@ -185,7 +185,7 @@ def make_grid(cols,rows):
 
 df_current_clients = pd.read_csv("../dataset_predict_compressed.gz", compression='gzip', sep=',')
 df_current_clients = df_current_clients.drop(columns=["SK_ID_CURR", "TARGET", "REPAY", "CLUSTER"])
-explainer = joblib.load("../models/shap_explainer.pckl")
+explainer = joblib.load("./models/shap_explainer.pckl")
 shap_values = explainer.shap_values(df_current_clients)
 
 st.write("") 

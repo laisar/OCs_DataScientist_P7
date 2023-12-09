@@ -27,6 +27,7 @@ import requests
 import json
 import urllib.request
 import joblib
+import os 
 #Options
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
@@ -88,19 +89,19 @@ st.write("")
 tab_score, tab_information, tab_feature_importance = st.tabs(["Client score", "Client information", "Client feature importance"])
 
 # Make an API request to the FastAPI backend
-response = requests.get("http://127.0.0.1:8000/api/clients")  # Replace with the actual URL of your FastAPI server
+response = requests.get("http://54.198.181.125/api/clients")  # Replace with the actual URL of your FastAPI server
 clients = response.json()
 my_list = clients["clientsId"]
 
-explainer = joblib.load("../models/shap_explainer.pckl")
+#explainer = joblib.load("shap_explainer.pckl")
 
 # Make an API request to the FastAPI backend
 choice = True
-response_repay = requests.get("http://127.0.0.1:8000/api/predictions/list_clients?id=true")  # Replace with the actual URL of your FastAPI server
+response_repay = requests.get("http://54.198.181.125/api/predictions/list_clients?id=true")  # Replace with the actual URL of your FastAPI server
 clients_repay = response_repay.json()
 
 # Make an API request to the FastAPI backend
-response_dontrepay = requests.get("http://127.0.0.1:8000/api/predictions/list_clients?id=false")  # Replace with the actual URL of your FastAPI server
+response_dontrepay = requests.get("http://54.198.181.125/api/predictions/list_clients?id=false")  # Replace with the actual URL of your FastAPI server
 clients_dontrepay = response_dontrepay.json()
 
 
@@ -113,19 +114,19 @@ if selected_option == "Allow loan":
 if selected_option == "Do not allow loan":
     selected_client = st.sidebar.selectbox("Select a customer: ", clients_dontrepay)
 
-client_probability = requests.get(f"http://127.0.0.1:8000/api/predictions/clients/?id={selected_client}")
+client_probability = requests.get(f"http://54.198.181.125/api/predictions/clients/?id={selected_client}")
 client_probability = client_probability.json()
 
-client_info = requests.get(f"http://127.0.0.1:8000/api/clients/clients_info/?id={selected_client}")
+client_info = requests.get(f"http://54.198.181.125/api/clients/clients_info/?id={selected_client}")
 client_info = client_info.json()
 
-client_shap = requests.get(f"http://127.0.0.1:8000/api/clients/client?id={selected_client}")
-client_shap = client_shap.json()
-client_shap = pd.DataFrame(client_shap) 
+#client_shap = requests.get(f"http://54.198.181.125/api/clients/client?id={selected_client}")
+#client_shap = client_shap.json()
+#client_shap = pd.DataFrame(client_shap) 
 
-shap_values = explainer.shap_values(client_shap)
+#shap_values = explainer.shap_values(client_shap)
 
-#client_shap = requests.get(f"http://127.0.0.1:8000/api/clients/shap/?id={selected_client}")
+#client_shap = requests.get(f"http://54.198.181.125/api/clients/shap/?id={selected_client}")
 #client_shap = client_shap.json()
 
 with tab_score:
@@ -253,42 +254,48 @@ with tab_information:
         with mygrid2[0][0]:
             st.write(str(selected_client))
             if((data.loc[data[str(selected_client)] == "Gender", "Client information"] == "Woman").any()):
-                image_path = "../streamlit/images/woman.png"
-                image = Image.open(image_path)
+                image_path = "woman.png"
+                path = os.path.dirname(__file__)
+                my_file = path+'/woman.png'
+                image = Image.open(my_file)
                 st.image(image, use_column_width=False, caption='Woman')
             else:
-                image_path = "../streamlit/images/man.png"
-                image = Image.open(image_path)
-                st.image(image, use_column_width=False, caption='Man')
+                st.write("")
+                #image_path = "images/man.png"
+                #image = Image.open(image_path)
+                #st.image(image, use_column_width=False, caption='Man')
                 
         with mygrid2[0][1]:
             st.write("Owns a car")
-            image_path_car = "../streamlit/images/car.png"
-            image_car = Image.open(image_path_car)
+            #image_path_car = "images/car.png"
+            #image_car = Image.open(image_path_car)
             if((data.loc[data[str(selected_client)] == "Owns a car", "Client information"] == "Yes").any()):
-                st.image(image_car, use_column_width=False, caption='Yes')
+                st.write("")
+                #st.image(image_car, use_column_width=False, caption='Yes')
             else:
                 image_car = image_car.convert('L')
-                st.image(image_car, use_column_width=False, caption='No')  
+                #st.image(image_car, use_column_width=False, caption='No')  
                 
         with mygrid2[0][2]:
             st.write("Owns a real estate property")
-            image_path_prop = "../streamlit/images/house.png"
-            image_prop = Image.open(image_path_prop)
+            #image_path_prop = "images/house.png"
+            #image_prop = Image.open(image_path_prop)
             if((data.loc[data[str(selected_client)] == "Owns a real estate property", "Client information"] == "Yes").any()):
-                st.image(image_prop, use_column_width=False, caption='Yes')
-            else:    
-                image_prop = image_prop.convert('L')
-                st.image(image_prop, use_column_width=False, caption='No') 
+                st.write("")
+                #st.image(image_prop, use_column_width=False, caption='Yes')
+            else:
+                st.write("")
+                #image_prop = image_prop.convert('L')
+                #st.image(image_prop, use_column_width=False, caption='No') 
 
     with mygrid[1][0]:
         
         st.dataframe(data.set_index(data.columns[0]))
-      
-with tab_feature_importance:
-    st.pyplot(shap.plots.force(explainer.expected_value[1], shap_values[1], client_shap, matplotlib=True))
+    
+    #with tab_feature_importance:
+    #st.pyplot(shap.plots.force(explainer.expected_value[1], shap_values[1], client_shap, matplotlib=True))
 
-    shap.decision_plot(explainer.expected_value[1], shap_values[1], client_shap)
+    #shap.decision_plot(explainer.expected_value[1], shap_values[1], client_shap)
 
-    st.pyplot()
+    #st.pyplot()
     #st.write(client_shap)
