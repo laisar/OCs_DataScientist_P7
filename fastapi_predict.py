@@ -29,7 +29,7 @@ df_clients_to_predict = pd.read_csv("dataset_predict.csv")
 df_current_clients = pd.read_csv("dataset_target.csv")
 
 
-@app.get("/api/clients")
+@app.get("/api/test")
 async def test():
     """ 
     EndPoint to get all clients id
@@ -167,3 +167,6 @@ async def similar_clients(id: int):
     similar_clients = df_similar_clients["SK_ID_CURR"].tolist()
     
     return similar_clients
+
+if __name__ == '__main__':
+    uvicorn.run(app, host='127.0.0.1', port=8000) 
