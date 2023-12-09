@@ -28,6 +28,17 @@ df_clients_to_predict = pd.read_csv("dataset_predict.csv")
 #df_clients_to_predict_original = pd.read_csv("dataset_predict_original.csv")
 df_current_clients = pd.read_csv("dataset_target.csv")
 
+
+@app.get("/api/clients")
+async def test():
+    """ 
+    EndPoint to get all clients id
+    """
+    
+    test = "Hello"
+
+    return test
+
 @app.get("/api/clients")
 async def clients_id():
     """ 
