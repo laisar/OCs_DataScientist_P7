@@ -253,7 +253,7 @@ with tab_information:
         with mygrid2[0][0]:
             st.write(str(selected_client))
             if((data.loc[data[str(selected_client)] == "Gender", "Client information"] == "Woman").any()):
-                image_path = "images/woman.png"
+                image_path = "woman.png"
                 image = Image.open(image_path)
                 st.image(image, use_column_width=False, caption='Woman')
             else:
