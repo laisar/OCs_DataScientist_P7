@@ -53,4 +53,4 @@ jobs:
       - name: Create archive of dependencies
         run: |
           cd ./venv
-          cd ls
+          ls
