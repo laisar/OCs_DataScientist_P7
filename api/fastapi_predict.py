@@ -14,7 +14,7 @@ from fastapi.responses import JSONResponse
 from sklearn.neighbors import NearestNeighbors
 import joblib
 import pickle
-
+from mangum import Mangum
 
 app = FastAPI(
     title="Home Credit Default Risk",
@@ -167,5 +167,4 @@ async def similar_clients(id: int):
     
     return similar_clients
 
-if __name__ == '__main__':
-    uvicorn.run(app, host='127.0.0.1', port=8000) 
+handler = Mangum(app=app)
