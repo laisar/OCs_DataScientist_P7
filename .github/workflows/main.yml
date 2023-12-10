@@ -52,12 +52,5 @@ jobs:
         run: . venv/bin/activate && pytest
       - name: Create archive of dependencies
         run: |
-          cd ./venv/lib/site-packages
-          zip -r9 ../../../api.zip .
-      - name: Add API files to Zip file
-        run: cd ./api && zip -g ../api.zip -r .
-      - name: Upload zip file artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: api
-          path: api.zip
+          cd ./venv
+          cd ls
