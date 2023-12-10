@@ -52,5 +52,5 @@ jobs:
         run: . venv/bin/activate && pytest
       - name: Create archive of dependencies
         run: |
-          cd ./venv
+          cd ./venv/lib
           ls
