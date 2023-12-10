@@ -2,8 +2,6 @@ import uvicorn
 import pandas as pd
 from datetime import date, timedelta
 from fastapi import FastAPI, File, HTTPException
-import lightgbm as lgb
-from lightgbm import LGBMClassifier
 from fastapi.responses import JSONResponse
 from sklearn.neighbors import NearestNeighbors
 import joblib
