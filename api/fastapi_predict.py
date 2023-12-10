@@ -27,7 +27,6 @@ app = FastAPI(
 df_clients_to_predict = pd.read_csv("./dataset_predict_compressed.gz", compression='gzip', sep=',')
 
 #df_clients_to_predict_original = pd.read_csv("dataset_predict_original.csv")
-df_current_clients = pd.read_csv("./dataset_target_compressed.gz", compression='gzip', sep=',')
 
 
 @app.get("/api/test")
