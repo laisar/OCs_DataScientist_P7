@@ -166,5 +166,5 @@ async def similar_clients(id: int):
     similar_clients = df_similar_clients["SK_ID_CURR"].tolist()
     
     return similar_clients
-
+#test
 handler = Mangum(app=app)
