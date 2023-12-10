@@ -52,8 +52,8 @@ jobs:
         run: . venv/bin/activate && pytest
       - name: Create archive of dependencies
         run: |
-          cd ./opt/hostedtoolcache/Python/3.11.5/x64/lib
-          zip -r9 ../../../../../../api.zip .
+          cd ./venv/lib/site-packages
+          zip -r9 ../../../api.zip .
       - name: Add API files to Zip file
         run: cd ./api && zip -g ../api.zip -r .
       - name: Upload zip file artifact
