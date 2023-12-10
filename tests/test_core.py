@@ -4,6 +4,6 @@ from api.fastapi_predict import app
 client = TestClient(app)
 
 def test_root():
-    response = client.get("/")
+    response = client.get("/api/test")
     assert response.status_code == 200
     assert response.json() == {"message": "Hello World"}
