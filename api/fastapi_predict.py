@@ -1,19 +1,12 @@
-import io
-import os
-import json
 import uvicorn 
-import gc
 import pandas as pd
-import numpy as np
 from datetime import date, timedelta
 from fastapi import FastAPI, File, HTTPException
 import lightgbm as lgb
 from lightgbm import LGBMClassifier
-import matplotlib.pyplot as plt
 from fastapi.responses import JSONResponse
 from sklearn.neighbors import NearestNeighbors
 import joblib
-import pickle
 from mangum import Mangum
 
 app = FastAPI(
@@ -142,13 +135,10 @@ async def explain(id: int):
 @app.get("/api/clients/similar_clients")
 async def similar_clients(id: int):
     
-    client = df_clients_to_predict[df_clients_to_predict["SK_ID_CURR"] == id]
-    client = client.drop(columns=["SK_ID_CURR", "TARGET", "REPAY", "CLUSTER"])
-    cluster = int(df_clients_to_predict[df_clients_to_predict["SK_ID_CURR"] == id]["CLUSTER"])
-    df_client_cluster = df_clients_to_predict[df_clients_to_predict["CLUSTER"] == cluster].reset_index(drop=True)
+    df_client_cluster = df_clients_to_predict
     
     # Choose the number of neighbors (k)
-    k = 10
+    k = 15
 
     # Create and fit the KNN model
     knn_model = NearestNeighbors(n_neighbors=k)
