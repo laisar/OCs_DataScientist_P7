@@ -35,10 +35,8 @@ async def test():
     """ 
     EndPoint to get all clients id
     """
-    
-    test = "Hello"
 
-    return test
+    return {"message": "Hello World"}
 
 @app.get("/api/clients")
 async def clients_id():

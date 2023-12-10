@@ -24,9 +24,21 @@ app = FastAPI(
 ########################################################
 # Reading the csv
 ########################################################
-df_clients_to_predict = pd.read_csv("dataset_predict.csv")
+df_clients_to_predict = pd.read_csv("dataset_predict_compressed.gz", compression='gzip', sep=',')
+
 #df_clients_to_predict_original = pd.read_csv("dataset_predict_original.csv")
-df_current_clients = pd.read_csv("dataset_target.csv")
+df_current_clients = pd.read_csv("dataset_target_compressed.gz", compression='gzip', sep=',')
+
+
+@app.get("/api/test")
+async def test():
+    """ 
+    EndPoint to get all clients id
+    """
+    
+    test = "Hello"
+
+    return test
 
 @app.get("/api/clients")
 async def clients_id():
@@ -51,7 +63,7 @@ async def predict(id: int):
         raise HTTPException(status_code=404, detail="client's id not found")
     else:
         # Loading the model
-        model = joblib.load("models/lightgbm_model.pckl")
+        model = joblib.load("lightgbm_model.pckl")
 
         threshold = 0.365
 
