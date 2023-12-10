@@ -17,7 +17,7 @@ import pickle
 from mangum import Mangum
 
 app = FastAPI(
-    title="Home Credit Default Risk",
+    title=" Home Credit Default Risk",
     description="""Obtain information related to probability of a client defaulting on loan."""
 )
 
