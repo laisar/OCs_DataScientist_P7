@@ -57,8 +57,8 @@ jobs:
           zip -r9 ../../../../api.zip .
       - name: Add API files to Zip file
         run: 
-          rm -rf ./api/__pycache__
-          rm -rf ./api/venv2
+          rm -rf ./api.zip/__pycache__
+          rm -rf ./api.zip/venv2
           cd ./api && zip -g ../api.zip -r .
       - name: Upload zip file artifact
         uses: actions/upload-artifact@v2
