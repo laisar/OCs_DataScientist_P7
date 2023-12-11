@@ -40,7 +40,7 @@ jobs:
       with:
         app-name: 'fastapilaisar'
         images: 'fastapilaisar.azurecr.io/fastapi-cd:${{ github.sha }}'
-        slot-name: 'staging'
+        slot-name: 'production'
         
         
     - name: Azure logout
