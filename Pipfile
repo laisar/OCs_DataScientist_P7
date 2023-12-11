@@ -10,6 +10,8 @@ touch = "*"
 httpx = "*"
 pandas = "*"
 scikit-learn = "*"
+pytest = "*"
+requests = "*"
 
 [dev-packages]
 
