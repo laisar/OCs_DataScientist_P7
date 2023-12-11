@@ -5,13 +5,15 @@ from fastapi import FastAPI, File, HTTPException
 from fastapi.responses import JSONResponse
 from sklearn.neighbors import NearestNeighbors
 import joblib
-from mangum import Mangum
+import os
 
 app = FastAPI(
     title=" Home Credit Default Risk",
     description="""Obtain information related to probability of a client defaulting on loan."""
 )
 
+# load environment variables
+port = os.environ["PORT"]
 ########################################################
 # Reading the csv
 ########################################################
@@ -154,4 +156,5 @@ async def similar_clients(id: int):
     
     return similar_clients
 #test
-handler = Mangum(app=app)
+if __name__ == "__main__":
+    uvicorn.run("fastapi_predict:app", host="0.0.0.0", port=int(port), reload=False)
