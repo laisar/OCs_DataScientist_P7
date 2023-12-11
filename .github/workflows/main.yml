@@ -53,6 +53,7 @@ jobs:
       - name: Create archive of dependencies
         run: |
           cd ./venv2/lib/python3.11/site-packages
+          ls
           zip -r9 ../../../../api.zip .
       - name: Add API files to Zip file
         run: cd ./api && zip -g ../api.zip -r .
