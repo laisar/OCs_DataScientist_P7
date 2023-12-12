@@ -17,3 +17,6 @@ requests = "*"
 
 [requires]
 python_version = "3.11"
+
+[scripts]
+test = "pytest"
