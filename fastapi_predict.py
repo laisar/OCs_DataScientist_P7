@@ -55,11 +55,11 @@ async def predict(id: int):
         # Loading the model
         model = joblib.load("./models/lightgbm_model.pckl")
 
-        threshold = 0.365
+        threshold = 0.426
 
         # Filtering by client's id
         df_prediction_by_id = df_clients_to_predict[df_clients_to_predict["SK_ID_CURR"] == id]
-        df_prediction_by_id = df_prediction_by_id.drop(columns=["SK_ID_CURR", "TARGET", "REPAY", "CLUSTER"])
+        df_prediction_by_id = df_prediction_by_id.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"])
 
         # Predicting
         result_proba = model.predict_proba(df_prediction_by_id)
@@ -127,7 +127,7 @@ async def client_info(id: int):
 async def explain(id: int):
     
     client = df_clients_to_predict[df_clients_to_predict["SK_ID_CURR"] == id]
-    client = client.drop(columns=["SK_ID_CURR", "TARGET", "REPAY", "CLUSTER"])
+    client = client.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"])
     client = client.to_dict(orient="records")
     
     return client
@@ -136,18 +136,20 @@ async def explain(id: int):
 async def similar_clients(id: int):
     
     df_client_cluster = df_clients_to_predict
+    client = df_clients_to_predict[df_clients_to_predict["SK_ID_CURR"] == id]
+    client = client.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"])
     
     # Choose the number of neighbors (k)
     k = 15
 
     # Create and fit the KNN model
     knn_model = NearestNeighbors(n_neighbors=k)
-    knn_model.fit(df_client_cluster.drop(columns=["SK_ID_CURR", "TARGET", "REPAY", "CLUSTER"]))
+    knn_model.fit(df_client_cluster.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"]))
     distances, indices = knn_model.kneighbors(client)
     
     # Create and fit the KNN model
     knn_model = NearestNeighbors(n_neighbors=k)
-    knn_model.fit(df_client_cluster.drop(columns=["SK_ID_CURR", "TARGET", "REPAY", "CLUSTER"]))
+    knn_model.fit(df_client_cluster.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"]))
     distances, indices = knn_model.kneighbors(client)
     
     df_similar_clients = df_client_cluster.iloc[indices[0]].reset_index(drop=True)
