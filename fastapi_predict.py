@@ -22,14 +22,6 @@ df_clients_to_predict = pd.read_csv("./dataset_predict_compressed.gz", compressi
 #df_clients_to_predict_original = pd.read_csv("dataset_predict_original.csv")
 
 
-@app.get("/api/test")
-async def test():
-    """ 
-    EndPoint to get all clients id
-    """
-
-    return {"message": "Hello World"}
-
 @app.get("/api/clients")
 async def clients_id():
     """ 
