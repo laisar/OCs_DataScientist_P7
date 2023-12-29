@@ -50,7 +50,7 @@ async def predict(id: int):
         threshold = 0.426
 
         # Filtering by client's id
-        df_prediction_by_id = df_clients_to_predict[df_clients_to_predict["SK_ID_CURR"] == id]
+        df_prediction_by_id = df_clients_to_predict[df_clients_to_predict["SK_ID_CURR"] == int(id)]
         df_prediction_by_id = df_prediction_by_id.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"])
 
         # Predicting
