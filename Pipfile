@@ -12,6 +12,7 @@ pandas = "*"
 scikit-learn = "*"
 pytest = "*"
 requests = "*"
+lightgbm = "*"
 
 [dev-packages]
 
