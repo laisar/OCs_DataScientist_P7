@@ -6,7 +6,8 @@ COPY ./fastapi_predict.py /app/fastapi_predict.py
 COPY ./Pipfile /app/Pipfile
 COPY ./Pipfile.lock /app/Pipfile.lock
 COPY ./dataset_predict_compressed.gz /app/dataset_predict_compressed.gz
-COPY ./lightgbm_model.pckl /app/lightgbm_model.pckl
+COPY ./models/lightgbm_model.pckl /app/lightgbm_model.pckl
+COPY ./models/shap_explainer.pckl /app/shap_explainer.pckl
 
 # set the working directory in the container to be /app
 WORKDIR /app
@@ -14,6 +15,9 @@ WORKDIR /app
 # install the packages from the Pipfile in the container
 RUN pip install pipenv
 RUN pipenv install --system --deploy --ignore-pipfile
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
+RUN apt-get -y install curl
+RUN apt-get install libgomp1
 
 # expose the port that uvicorn will run the app on
 ENV PORT=8000

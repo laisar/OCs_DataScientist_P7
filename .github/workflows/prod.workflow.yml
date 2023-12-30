@@ -59,22 +59,22 @@ jobs:
       - name: Login to Azure Container Registry
         uses: azure/docker-login@v1
         with:
-          login-server: fastapilaisar.azurecr.io
+          login-server: fastapilaisar2.azurecr.io
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
       
       
       - name: Build and push container image to registry 
         run: |
-          docker build . -t fastapilaisar.azurecr.io/fastapi-cd:${{ github.sha }}
-          docker push fastapilaisar.azurecr.io/fastapi-cd:${{ github.sha }}
+          docker build . -t fastapilaisar2.azurecr.io/fastapi-cd:${{ github.sha }}
+          docker push fastapilaisar2.azurecr.io/fastapi-cd:${{ github.sha }}
           
           
       - name: Deploy to App Service
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'fastapilaisar'
-          images: 'fastapilaisar.azurecr.io/fastapi-cd:${{ github.sha }}'
+          app-name: 'fastapilaisar2'
+          images: 'fastapilaisar2.azurecr.io/fastapi-cd:${{ github.sha }}'
           slot-name: 'production'
           
           

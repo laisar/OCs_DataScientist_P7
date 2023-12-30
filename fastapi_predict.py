@@ -5,6 +5,7 @@ from fastapi import FastAPI, File, HTTPException
 from fastapi.responses import JSONResponse
 from sklearn.neighbors import NearestNeighbors
 import joblib
+import pickle
 import os
 import numpy as np
 
@@ -20,9 +21,11 @@ port = os.environ["PORT"]
 ########################################################
 df_clients_to_predict = pd.read_csv("./dataset_predict_compressed.gz", compression='gzip', sep=',')
 
+model = pickle.load(open("./lightgbm_model.pckl", 'rb'))
+
 # Load shap model
-#lgbm_shap = joblib.load('./shap_explainer.pckl')
-#shap_values = lgbm_shap.shap_values(df_clients_to_predict.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"]))
+lgbm_shap = pickle.load(open("./shap_explainer.pckl", 'rb'))
+shap_values = lgbm_shap.shap_values(df_clients_to_predict.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"]))
 
 #df_clients_to_predict_original = pd.read_csv("dataset_predict_original.csv")
 
@@ -50,12 +53,11 @@ async def predict(id: int):
         raise HTTPException(status_code=404, detail="client's id not found")
     else:
         # Loading the model
-        model = joblib.load("./lightgbm_model.pckl")
 
         threshold = 0.426
 
         # Filtering by client's id
-        df_prediction_by_id = df_clients_to_predict[df_clients_to_predict["SK_ID_CURR"] == 100001]
+        df_prediction_by_id = df_clients_to_predict[df_clients_to_predict["SK_ID_CURR"] == id]
         df_prediction_by_id = df_prediction_by_id.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"])
 
         # Predicting
@@ -154,6 +156,52 @@ async def similar_clients(id: int):
     similar_clients = df_similar_clients["SK_ID_CURR"].tolist()
     
     return similar_clients
+
+@app.get('/api/clients/prediction/shap/local')
+async def get_local_shap(id: int):
+    ''' Endpoint to get local shap values
+    '''
+    clients_id = df_clients_to_predict['SK_ID_CURR'].astype(int).tolist()
+
+    if id not in clients_id:
+        raise HTTPException(status_code=404, detail='Client id not found')
+    else:
+        idx = int(list(df_clients_to_predict[df_clients_to_predict['SK_ID_CURR'] == id].index.values)[0])
+
+        shap_values_idx = shap_values[0][idx, :]
+        shap_values_abs_sum = np.abs(shap_values_idx)
+        top_feature_indices = np.argsort(shap_values_abs_sum)[-10:]
+        top_feature_names = df_clients_to_predict.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"]).columns[top_feature_indices]
+        top_feature_shap_values = shap_values_idx[top_feature_indices]
+
+
+    client_shap = {}
+
+    for name, value in zip(top_feature_names, top_feature_shap_values):
+        client_shap[name] = value
+
+    return client_shap
+
+@app.get('/api/clients/prediction/shap/global')
+async def get_global_shap(id: int):
+    ''' Endpoint to get global shap values
+    '''
+    clients_id = df_clients_to_predict['SK_ID_CURR'].astype(int).tolist()
+
+    if id not in clients_id:
+        raise HTTPException(status_code=404, detail='Client id not found')
+    else:
+        idx = int(list(df_clients_to_predict[df_clients_to_predict['SK_ID_CURR'] == id].index.values)[0])
+
+        feature_names = df_clients_to_predict.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"]).columns
+        shap_values_summary = pd.DataFrame(shap_values[0], columns=feature_names)
+        top_global_features = shap_values_summary.abs().mean().nlargest(10)
+
+    client_shap = {}
+
+    client_shap.update(top_global_features.to_dict())
+
+    return client_shap
 
 #test
 if __name__ == "__main__":
