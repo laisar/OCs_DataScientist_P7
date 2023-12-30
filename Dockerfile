@@ -7,7 +7,6 @@ COPY ./Pipfile /app/Pipfile
 COPY ./Pipfile.lock /app/Pipfile.lock
 COPY ./dataset_predict_compressed.gz /app/dataset_predict_compressed.gz
 COPY ./lightgbm_model.pckl /app/lightgbm_model.pckl
-COPY ./shap_explainer.pckl /app/shap_explainer.pckl
 
 # set the working directory in the container to be /app
 WORKDIR /app
