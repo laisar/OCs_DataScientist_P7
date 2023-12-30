@@ -21,7 +21,7 @@ port = os.environ["PORT"]
 df_clients_to_predict = pd.read_csv("./dataset_predict_compressed.gz", compression='gzip', sep=',')
 
 # Load shap model
-lgbm_shap = joblib.load('models/shap_explainer.pckl')
+lgbm_shap = joblib.load('./shap_explainer.pckl')
 shap_values = lgbm_shap.shap_values(df_clients_to_predict.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"]))
 
 #df_clients_to_predict_original = pd.read_csv("dataset_predict_original.csv")
@@ -50,7 +50,7 @@ async def predict(id: int):
         raise HTTPException(status_code=404, detail="client's id not found")
     else:
         # Loading the model
-        model = joblib.load("lightgbm_model.pckl")
+        model = joblib.load("./lightgbm_model.pckl")
 
         threshold = 0.426
 
