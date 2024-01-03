@@ -15,19 +15,17 @@ app = FastAPI(
 )
 
 # load environment variables
-port = os.environ["PORT"]
+#port = os.environ["PORT"]
 ########################################################
-# Reading the csv
+# Reading the csvp
 ########################################################
-df_clients_to_predict = pd.read_csv("./dataset_predict_compressed.gz", compression='gzip', sep=',')
+df_clients_to_predict = pd.read_csv("./data/dataset_predict_compressed.gz", compression='gzip', sep=',')
 
-model = pickle.load(open("./lightgbm_model.pckl", 'rb'))
+model = pickle.load(open("./models/lightgbm_model.pckl", 'rb'))
 
 # Load shap model
-lgbm_shap = pickle.load(open("./shap_explainer.pckl", 'rb'))
+lgbm_shap = pickle.load(open("./models/shap_explainer.pckl", 'rb'))
 shap_values = lgbm_shap.shap_values(df_clients_to_predict.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"]))
-
-#df_clients_to_predict_original = pd.read_csv("dataset_predict_original.csv")
 
 
 @app.get("/api/clients")
@@ -205,4 +203,4 @@ async def get_global_shap(id: int):
 
 #test
 if __name__ == "__main__":
-    uvicorn.run("fastapi_predict:app", host="0.0.0.0", port=int(port), reload=False)
+    uvicorn.run("fastapi_predict:app", reload=True, host="0.0.0.0", port=8000)
