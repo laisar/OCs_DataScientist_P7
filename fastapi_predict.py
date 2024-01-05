@@ -6,27 +6,30 @@ from fastapi.responses import JSONResponse
 from sklearn.neighbors import NearestNeighbors
 import joblib
 import pickle
+import json
 import os
 import numpy as np
 
 app = FastAPI(
-    title=" Home Credit Default Risk ",
-    description="""Obtain information related to probability of a client defaulting on loan."""
+    title=" Home Credit Default Risk FastAPI - OpenClassrooms Data Scientist P7",
+    description="""Get information about clients, as well as the likelihood of loan default."""
 )
 
 # load environment variables
 #port = os.environ["PORT"]
-########################################################
-# Reading the csvp
-########################################################
+
+
 df_clients_to_predict = pd.read_csv("./data/dataset_predict_compressed.gz", compression='gzip', sep=',')
 
-model = pickle.load(open("./models/lightgbm_model.pckl", 'rb'))
+model = pickle.load(open("./models/xgboost_classifier.pkl", 'rb'))
 
 # Load shap model
-lgbm_shap = pickle.load(open("./models/shap_explainer.pckl", 'rb'))
+lgbm_shap = pickle.load(open("./models/xgboost_shap_explainer.pkl", 'rb'))
 shap_values = lgbm_shap.shap_values(df_clients_to_predict.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"]))
 
+@app.get("/")
+def read_root():
+    return {"message": "Home Credit Default Risk FastAPI - OpenClassrooms Data Scientist P7"}
 
 @app.get("/api/clients")
 async def clients_id():
@@ -48,11 +51,11 @@ async def predict(id: int):
     clients_id = df_clients_to_predict["SK_ID_CURR"].tolist()
 
     if id not in clients_id:
-        raise HTTPException(status_code=404, detail="client's id not found")
+        raise HTTPException(status_code=404, detail="Client id not found")
     else:
         # Loading the model
 
-        threshold = 0.426
+        threshold = 0.419
 
         # Filtering by client's id
         df_prediction_by_id = df_clients_to_predict[df_clients_to_predict["SK_ID_CURR"] == id]
@@ -71,8 +74,8 @@ async def predict(id: int):
 
     return {
         "repay" : result,
-        "probability0" : result_proba[0][0],
-        "probability1" : result_proba[0][1],
+        "probability0" : result_proba[0][0].tolist(),
+        "probability1" : result_proba[0][1].tolist(),
         "threshold" : threshold
     }
 
@@ -81,6 +84,7 @@ async def clients_list(id: bool):
     """ 
     EndPoint to get clients that repay and clients that do not repay
     """ 
+
     if id:  
         result = df_clients_to_predict.loc[df_clients_to_predict['REPAY'] == True, 'SK_ID_CURR'].tolist()
     else:
@@ -90,13 +94,17 @@ async def clients_list(id: bool):
 
 @app.get("/api/clients/clients_info")
 async def client_info(id: int):
-
     """ 
     EndPoint to get client's detail 
     """
-     
+    clients_id = df_clients_to_predict['SK_ID_CURR'].astype(int).tolist()
+
+    if id not in clients_id:
+        raise HTTPException(status_code=404, detail='Client id not found')
+    
+    else:
     # Filtering by client's id
-    client = df_clients_to_predict[df_clients_to_predict["SK_ID_CURR"] == id]
+        client = df_clients_to_predict[df_clients_to_predict["SK_ID_CURR"] == id]
 
     client_information = {
         
@@ -122,36 +130,54 @@ async def client_info(id: int):
 
 @app.get("/api/clients/client")
 async def explain(id: int):
+    """ 
+    EndPoint to get client's complet info
+    """
+
+    clients_id = df_clients_to_predict['SK_ID_CURR'].astype(int).tolist()
+
+    if id not in clients_id:
+        raise HTTPException(status_code=404, detail='Client id not found')
     
-    client = df_clients_to_predict[df_clients_to_predict["SK_ID_CURR"] == id]
-    client = client.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"])
-    client = client.to_dict(orient="records")
+    else:
+        client = df_clients_to_predict[df_clients_to_predict["SK_ID_CURR"] == id]
+        client = client.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"])
+        client = client.to_dict(orient="records")
     
     return client
 
 @app.get("/api/clients/similar_clients")
 async def similar_clients(id: int):
-    
-    df_client_cluster = df_clients_to_predict
-    client = df_clients_to_predict[df_clients_to_predict["SK_ID_CURR"] == id]
-    client = client.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"])
-    
-    # Choose the number of neighbors (k)
-    k = 15
+    """ 
+    EndPoint to get similar clients
+    """
 
-    # Create and fit the KNN model
-    knn_model = NearestNeighbors(n_neighbors=k)
-    knn_model.fit(df_client_cluster.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"]))
-    distances, indices = knn_model.kneighbors(client)
-    
-    # Create and fit the KNN model
-    knn_model = NearestNeighbors(n_neighbors=k)
-    knn_model.fit(df_client_cluster.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"]))
-    distances, indices = knn_model.kneighbors(client)
-    
-    df_similar_clients = df_client_cluster.iloc[indices[0]].reset_index(drop=True)
+    clients_id = df_clients_to_predict['SK_ID_CURR'].astype(int).tolist()
 
-    similar_clients = df_similar_clients["SK_ID_CURR"].tolist()
+    if id not in clients_id:
+        raise HTTPException(status_code=404, detail='Client id not found')
+    
+    else:
+        df_client_cluster = df_clients_to_predict
+        client = df_clients_to_predict[df_clients_to_predict["SK_ID_CURR"] == id]
+        client = client.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"])
+        
+        # Choose the number of neighbors (k)
+        k = 15
+
+        # Create and fit the KNN model
+        knn_model = NearestNeighbors(n_neighbors=k)
+        knn_model.fit(df_client_cluster.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"]))
+        distances, indices = knn_model.kneighbors(client)
+        
+        # Create and fit the KNN model
+        knn_model = NearestNeighbors(n_neighbors=k)
+        knn_model.fit(df_client_cluster.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"]))
+        distances, indices = knn_model.kneighbors(client)
+        
+        df_similar_clients = df_client_cluster.iloc[indices[0]].reset_index(drop=True)
+
+        similar_clients = df_similar_clients["SK_ID_CURR"].tolist()
     
     return similar_clients
 
@@ -166,7 +192,7 @@ async def get_local_shap(id: int):
     else:
         idx = int(list(df_clients_to_predict[df_clients_to_predict['SK_ID_CURR'] == id].index.values)[0])
 
-        shap_values_idx = shap_values[0][idx, :]
+        shap_values_idx = shap_values[idx]
         shap_values_abs_sum = np.abs(shap_values_idx)
         top_feature_indices = np.argsort(shap_values_abs_sum)[-10:]
         top_feature_names = df_clients_to_predict.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"]).columns[top_feature_indices]
@@ -175,8 +201,10 @@ async def get_local_shap(id: int):
 
     client_shap = {}
 
-    for name, value in zip(top_feature_names, top_feature_shap_values):
-        client_shap[name] = value
+    for i in range(0, 10):
+        feature_name = str(top_feature_names[i])  # Ensure the feature name is a string
+        shap_value = float(top_feature_shap_values[i])  # Convert Shapley value to float
+        client_shap[feature_name] = shap_value
 
     return client_shap
 
@@ -192,7 +220,7 @@ async def get_global_shap(id: int):
         idx = int(list(df_clients_to_predict[df_clients_to_predict['SK_ID_CURR'] == id].index.values)[0])
 
         feature_names = df_clients_to_predict.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"]).columns
-        shap_values_summary = pd.DataFrame(shap_values[0], columns=feature_names)
+        shap_values_summary = pd.DataFrame(shap_values, columns=feature_names)
         top_global_features = shap_values_summary.abs().mean().nlargest(10)
 
     client_shap = {}
