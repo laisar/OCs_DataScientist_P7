@@ -1,4 +1,7 @@
-name: FastAPI CI/CD
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy container app to Azure Web App - fastapilaisar
 
 on:
   # Trigger the workflow on push
@@ -7,77 +10,67 @@ on:
       # Push events on main branch
       - master 
 
-# The Job defines a series of steps that execute on the same runner.
 jobs:
-
-  CI:
-    # Define the runner used in the workflow
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+  build:
+    runs-on: 'ubuntu-latest'
 
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v2
+    - name: Check out repository code
+      uses: actions/checkout@v2
 
-      # Setup Python (faster than using Python container)
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.11.5"
+    # Setup Python (faster than using Python container)
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.11.5"
 
-      - name: Install pipenv
-        run: |
-          python -m pip install --upgrade pipenv wheel
-      - id: cache-pipenv
-        uses: actions/cache@v1
-        with:
-          path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+    - name: Install pipenv
+      run: |
+        python -m pip install --upgrade pipenv wheel
+    - id: cache-pipenv
+      uses: actions/cache@v1
+      with:
+        path: ~/.local/share/virtualenvs
+        key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
 
-      - name: Install dependencies
-        if: steps.cache-pipenv.outputs.cache-hit != 'true'
-        run: |
-          pipenv install --deploy --dev
-      - name: Run test suite
-        run: |
-          pipenv run test -v
+    - name: Install dependencies
+      if: steps.cache-pipenv.outputs.cache-hit != 'true'
+      run: |
+        pipenv install --deploy --dev
+    - name: Run test suite
+      run: |
+        pipenv run test -v
 
-  CD:
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to registry
+      uses: docker/login-action@v2
+      with:
+        registry: https://fastapilaisar.azurecr.io/
+        username: ${{ secrets.AzureAppService_ContainerUsername_ec0c39ddf31747e59827da9a7f667cb3 }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_674da25bd08840618eb19b0cd6678382 }}
+
+    - name: Build and push container image to registry
+      uses: docker/build-push-action@v3
+      with:
+        push: true
+        tags: fastapilaisar.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_ec0c39ddf31747e59827da9a7f667cb3 }}/fastapi-cd:${{ github.sha }}
+        file: ./Dockerfile
+
+  deploy:
     runs-on: ubuntu-latest
-    needs: [CI]
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    needs: build
+    environment:
+      name: 'production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
     steps:
-      - name: Checkout GitHub Actions
-        uses: actions/checkout@main
-        
-      - name: Login via Azure CLI
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-          
-          
-      - name: Login to Azure Container Registry
-        uses: azure/docker-login@v1
-        with:
-          login-server: fastapilaisar.azurecr.io
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
-      
-      
-      - name: Build and push container image to registry 
-        run: |
-          docker build . -t fastapilaisar.azurecr.io/fastapi-cd:${{ github.sha }}
-          docker push fastapilaisar.azurecr.io/fastapi-cd:${{ github.sha }}
-          
-          
-      - name: Deploy to App Service
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'fastapilaisar'
-          images: 'fastapilaisar.azurecr.io/fastapi-cd:${{ github.sha }}'
-          slot-name: 'production'
-          
-          
-      - name: Azure logout
-        run: |
-          az logout
+    - name: Deploy to Azure Web App
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'fastapilaisar'
+        slot-name: 'production'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_f87e0f4335ee4cf9a1c149090d86dc74 }}
+        images: 'fastapilaisar.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_ec0c39ddf31747e59827da9a7f667cb3 }}/fastapi-cd:${{ github.sha }}'
