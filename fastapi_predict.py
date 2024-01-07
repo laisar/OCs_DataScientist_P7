@@ -3,6 +3,7 @@ import pandas as pd
 from datetime import date, timedelta
 from fastapi import FastAPI, File, HTTPException
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 from sklearn.neighbors import NearestNeighbors
 import joblib
 import pickle
@@ -247,20 +248,6 @@ async def get_stats_children():
     df = pd.DataFrame(data)
 
     return JSONResponse(content=df.to_dict(orient='records'), media_type="application/json")
-
-@app.get('/api/statistics/credit')
-async def get_stats_credit():
-
-    data = df_clients_target[['TARGET', 'AMT_CREDIT']]
-
-    return JSONResponse(content=data.to_dict(orient='records'), media_type="application/json")
-
-@app.get('/api/statistics/income')
-async def get_stats_income():
-
-    data = df_clients_target[['TARGET', 'AMT_INCOME_TOTAL']]
-
-    return JSONResponse(content=data.to_dict(orient='records'), media_type="application/json")
 
 @app.get("/api/clients")
 async def clients_id():
