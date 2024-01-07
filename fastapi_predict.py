@@ -19,7 +19,6 @@ app = FastAPI(
 # load environment variables
 port = os.environ["PORT"]
 
-
 df_clients_to_predict = pd.read_csv("./data/dataset_predict_compressed.gz", compression='gzip', sep=',')
 df_clients_target = pd.read_csv("./data/dataset_target_compressed.gz", compression='gzip', sep=',')
 
@@ -365,7 +364,7 @@ async def explain(id: int):
 
 
 @app.get("/api/clients/similar_clients")
-async def similar_clients(id: int):
+async def similar_clients(id: int, k: int):
     """ 
     EndPoint to get similar clients
     """
@@ -379,9 +378,6 @@ async def similar_clients(id: int):
         df_client_cluster = df_clients_to_predict
         client = df_clients_to_predict[df_clients_to_predict["SK_ID_CURR"] == id]
         client = client.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"])
-        
-        # Choose the number of neighbors (k)
-        k = 15
 
         # Create and fit the KNN model
         knn_model = NearestNeighbors(n_neighbors=k)
@@ -395,9 +391,24 @@ async def similar_clients(id: int):
         
         df_similar_clients = df_client_cluster.iloc[indices[0]].reset_index(drop=True)
 
-        similar_clients = df_similar_clients["SK_ID_CURR"].tolist()
-    
-    return similar_clients
+        columns = ["SK_ID_CURR", "AMT_CREDIT", "AMT_ANNUITY", "AMT_INCOME_TOTAL", "PAYMENT_RATE", 
+                   "EXT_SOURCE_2", "EXT_SOURCE_3", "CODE_GENDER", "DAYS_BIRTH", "NAME_FAMILY_STATUS_Married", 
+                   "CNT_CHILDREN", "NAME_INCOME_TYPE_Working", "DAYS_EMPLOYED", "FLAG_OWN_CAR", "FLAG_OWN_REALTY","REPAY"]
+        
+        df_similar_clients = df_similar_clients[columns]
+
+        df_similar_clients['AMT_CREDIT'] = round(df_similar_clients['AMT_CREDIT'])
+        df_similar_clients['AMT_ANNUITY'] = round(df_similar_clients['AMT_ANNUITY'])
+        df_similar_clients['AMT_INCOME_TOTAL'] = round(df_similar_clients['AMT_INCOME_TOTAL'])
+        df_similar_clients['PAYMENT_RATE'] = round(df_similar_clients['PAYMENT_RATE']*100)
+        df_similar_clients['EXT_SOURCE_2'] = round(df_similar_clients['EXT_SOURCE_2']*100)
+        df_similar_clients['EXT_SOURCE_3'] = round(df_similar_clients['EXT_SOURCE_3']*100)
+        df_similar_clients['AGE'] = abs(round(df_similar_clients['DAYS_BIRTH']/365))
+        df_similar_clients['YEARS_EMPLOYED'] = abs(round(df_similar_clients['DAYS_EMPLOYED']/365))
+
+        df_similar_clients = df_similar_clients.drop(columns=["DAYS_BIRTH", "DAYS_EMPLOYED"])
+
+    return JSONResponse(content=df_similar_clients.to_dict(orient='records'), media_type="application/json")
 
 @app.get('/api/clients/prediction/shap/local')
 async def get_local_shap(id: int):
@@ -432,14 +443,16 @@ async def get_global_shap(id: int):
     '''
     clients_id = df_clients_to_predict['SK_ID_CURR'].astype(int).tolist()
 
-    if id not in clients_id:
+    client_id = 100001
+
+    if client_id not in clients_id:
         raise HTTPException(status_code=404, detail='Client id not found')
     else:
-        idx = int(list(df_clients_to_predict[df_clients_to_predict['SK_ID_CURR'] == id].index.values)[0])
+        idx = int(list(df_clients_to_predict[df_clients_to_predict['SK_ID_CURR'] == client_id].index.values)[0])
 
         feature_names = df_clients_to_predict.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"]).columns
         shap_values_summary = pd.DataFrame(shap_values, columns=feature_names)
-        top_global_features = shap_values_summary.abs().mean().nlargest(10)
+        top_global_features = shap_values_summary.abs().mean().nlargest(id)
 
     client_shap = {}
 
