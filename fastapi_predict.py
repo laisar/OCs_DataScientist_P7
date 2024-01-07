@@ -32,15 +32,6 @@ shap_values = lgbm_shap.shap_values(df_clients_to_predict.drop(columns=["SK_ID_C
 def read_root():
     return {"message": "Home Credit Default Risk FastAPI - OpenClassrooms Data Scientist P7"}
 
-@app.get("/api/clients")
-async def clients_id():
-    """ 
-    EndPoint to get all clients id
-    """
-    
-    clients_id = df_clients_to_predict["SK_ID_CURR"].tolist()
-
-    return {"clientsId": clients_id}
 
 @app.get("/api/clients/gender")
 async def clients_gender():
@@ -110,6 +101,176 @@ async def clients_house():
 
     return house_information
 
+@app.get("/api/clients/working")
+async def clients_working():
+    """ 
+    EndPoint to get client's working
+    """
+
+    hasajob = round((df_clients_target['NAME_INCOME_TYPE_Working'][df_clients_target['NAME_INCOME_TYPE_Working'] == 1].count() / len(df_clients_target)) * 100,2)
+    doesnothasajob = round((df_clients_target['NAME_INCOME_TYPE_Working'][df_clients_target['NAME_INCOME_TYPE_Working'] == 0].count()/ len(df_clients_target)) * 100,2)
+
+    working_info = {
+        
+        "Repaid": hasajob,
+        "Defaulted": doesnothasajob
+    }
+
+    return working_info
+
+@app.get("/api/clients/married")
+async def clients_married():
+    """ 
+    EndPoint to get client's married
+    """
+
+    married = round((df_clients_target['NAME_FAMILY_STATUS_Married'][df_clients_target['NAME_FAMILY_STATUS_Married'] == 1].count() / len(df_clients_target)) * 100,2)
+    notmarried = round((df_clients_target['NAME_FAMILY_STATUS_Married'][df_clients_target['NAME_FAMILY_STATUS_Married'] == 0].count()/ len(df_clients_target)) * 100,2)
+
+    married_info = {
+        
+        "Repaid": married,
+        "Defaulted": notmarried
+    }
+
+    return married_info
+
+@app.get("/api/clients/children")
+async def clients_children():
+    """ 
+    EndPoint to get client's children
+    """
+
+    haschildren = round((df_clients_target['CNT_CHILDREN'][df_clients_target['CNT_CHILDREN'] >= 1].count() / len(df_clients_target)) * 100,2)
+    notchildren = round((df_clients_target['CNT_CHILDREN'][df_clients_target['CNT_CHILDREN'] == 0].count()/ len(df_clients_target)) * 100,2)
+
+    children_info = {
+        
+        "Repaid": haschildren,
+        "Defaulted": notchildren
+    }
+
+    return children_info
+
+@app.get('/api/statistics/genders')
+async def get_stats_gender():
+
+    count_rows1 = df_clients_target.loc[(df_clients_target['CODE_GENDER'] == 0) & (df_clients_target['TARGET'] == 0)].shape[0]
+    count_rows2 = df_clients_target.loc[(df_clients_target['CODE_GENDER'] == 0) & (df_clients_target['TARGET'] == 1)].shape[0]
+    count_rows3 = df_clients_target.loc[(df_clients_target['CODE_GENDER'] == 1) & (df_clients_target['TARGET'] == 0)].shape[0]
+    count_rows4 = df_clients_target.loc[(df_clients_target['CODE_GENDER'] == 1) & (df_clients_target['TARGET'] == 1)].shape[0]
+
+    data = {'Gender': ['Men', 'Men', 'Women', 'Women'],
+            'Stats Loan': ['Repaid', 'Defaulted', 'Repaid', 'Defaulted'],
+            'Value': [count_rows1, count_rows2, count_rows3, count_rows4]}
+
+    df = pd.DataFrame(data)
+
+    return JSONResponse(content=df.to_dict(orient='records'), media_type="application/json")
+
+@app.get('/api/statistics/houses')
+async def get_stats_house():
+
+    count_rows1 = df_clients_target.loc[(df_clients_target['TARGET'] == 0) & (df_clients_target['FLAG_OWN_REALTY'] == 1)].shape[0]
+    count_rows2 = df_clients_target.loc[(df_clients_target['TARGET'] == 1) & (df_clients_target['FLAG_OWN_REALTY'] == 1)].shape[0]
+    count_rows3 = df_clients_target.loc[(df_clients_target['TARGET'] == 0) & (df_clients_target['FLAG_OWN_REALTY'] == 0)].shape[0]
+    count_rows4 = df_clients_target.loc[(df_clients_target['TARGET'] == 1) & (df_clients_target['FLAG_OWN_REALTY'] == 0)].shape[0]
+
+    data = {'Real State Property': ['Owns property', "Owns property", "Doesn't own property", "Doesn't own property"],
+            'Stats Loan': ['Repaid', 'Defaulted', 'Repaid', 'Defaulted'],
+            'Value': [count_rows1, count_rows2, count_rows3, count_rows4]}
+
+    df = pd.DataFrame(data)
+
+    return JSONResponse(content=df.to_dict(orient='records'), media_type="application/json")
+
+@app.get('/api/statistics/cars')
+async def get_stats_car():
+
+    count_rows1 = df_clients_target.loc[(df_clients_target['TARGET'] == 0) & (df_clients_target['FLAG_OWN_CAR'] == 1)].shape[0]
+    count_rows2 = df_clients_target.loc[(df_clients_target['TARGET'] == 1) & (df_clients_target['FLAG_OWN_CAR'] == 1)].shape[0]
+    count_rows3 = df_clients_target.loc[(df_clients_target['TARGET'] == 0) & (df_clients_target['FLAG_OWN_CAR'] == 0)].shape[0]
+    count_rows4 = df_clients_target.loc[(df_clients_target['TARGET'] == 1) & (df_clients_target['FLAG_OWN_CAR'] == 0)].shape[0]
+
+    data = {'Vehicle': ['Owns vehicle', "Owns vehicle", "Doesn't own vehicle", "Doesn't own vehicle"],
+            'Stats Loan': ['Repaid', 'Defaulted', 'Repaid', 'Defaulted'],
+            'Value': [count_rows1, count_rows2, count_rows3, count_rows4]}
+
+    df = pd.DataFrame(data)
+
+    return JSONResponse(content=df.to_dict(orient='records'), media_type="application/json")
+
+@app.get('/api/statistics/working')
+async def get_stats_work():
+
+    count_rows1 = df_clients_target.loc[(df_clients_target['TARGET'] == 0) & (df_clients_target['NAME_INCOME_TYPE_Working'] == 1)].shape[0]
+    count_rows2 = df_clients_target.loc[(df_clients_target['TARGET'] == 1) & (df_clients_target['NAME_INCOME_TYPE_Working'] == 1)].shape[0]
+    count_rows3 = df_clients_target.loc[(df_clients_target['TARGET'] == 0) & (df_clients_target['NAME_INCOME_TYPE_Working'] == 0)].shape[0]
+    count_rows4 = df_clients_target.loc[(df_clients_target['TARGET'] == 1) & (df_clients_target['NAME_INCOME_TYPE_Working'] == 0)].shape[0]
+
+    data = {'Working status': ['Works', "Works", "Doesn't work", "Doesn't work"],
+            'Stats Loan': ['Repaid', 'Defaulted', 'Repaid', 'Defaulted'],
+            'Value': [count_rows1, count_rows2, count_rows3, count_rows4]}
+
+    df = pd.DataFrame(data)
+
+    return JSONResponse(content=df.to_dict(orient='records'), media_type="application/json")
+
+@app.get('/api/statistics/married')
+async def get_stats_married():
+
+    count_rows1 = df_clients_target.loc[(df_clients_target['TARGET'] == 0) & (df_clients_target['NAME_FAMILY_STATUS_Married'] == 1)].shape[0]
+    count_rows2 = df_clients_target.loc[(df_clients_target['TARGET'] == 1) & (df_clients_target['NAME_FAMILY_STATUS_Married'] == 1)].shape[0]
+    count_rows3 = df_clients_target.loc[(df_clients_target['TARGET'] == 0) & (df_clients_target['NAME_FAMILY_STATUS_Married'] == 0)].shape[0]
+    count_rows4 = df_clients_target.loc[(df_clients_target['TARGET'] == 1) & (df_clients_target['NAME_FAMILY_STATUS_Married'] == 0)].shape[0]
+
+    data = {'Marital status': ['Married', "Married", "Not Married", "Not Married"],
+            'Stats Loan': ['Repaid', 'Defaulted', 'Repaid', 'Defaulted'],
+            'Value': [count_rows1, count_rows2, count_rows3, count_rows4]}
+
+    df = pd.DataFrame(data)
+
+    return JSONResponse(content=df.to_dict(orient='records'), media_type="application/json")
+
+@app.get('/api/statistics/children')
+async def get_stats_children():
+
+    count_rows1 = df_clients_target.loc[(df_clients_target['TARGET'] == 0) & (df_clients_target['CNT_CHILDREN'] >= 1)].shape[0]
+    count_rows2 = df_clients_target.loc[(df_clients_target['TARGET'] == 1) & (df_clients_target['CNT_CHILDREN'] >= 1)].shape[0]
+    count_rows3 = df_clients_target.loc[(df_clients_target['TARGET'] == 0) & (df_clients_target['CNT_CHILDREN'] == 0)].shape[0]
+    count_rows4 = df_clients_target.loc[(df_clients_target['TARGET'] == 1) & (df_clients_target['CNT_CHILDREN'] == 0)].shape[0]
+
+    data = {'Children': ['Has children', "Has children", "Doesn't have children", "Doesn't have children"],
+            'Stats Loan': ['Repaid', 'Defaulted', 'Repaid', 'Defaulted'],
+            'Value': [count_rows1, count_rows2, count_rows3, count_rows4]}
+
+    df = pd.DataFrame(data)
+
+    return JSONResponse(content=df.to_dict(orient='records'), media_type="application/json")
+
+@app.get('/api/statistics/credit')
+async def get_stats_credit():
+
+    data = df_clients_target[['TARGET', 'AMT_CREDIT']]
+
+    return JSONResponse(content=data.to_dict(orient='records'), media_type="application/json")
+
+@app.get('/api/statistics/income')
+async def get_stats_income():
+
+    data = df_clients_target[['TARGET', 'AMT_INCOME_TOTAL']]
+
+    return JSONResponse(content=data.to_dict(orient='records'), media_type="application/json")
+
+@app.get("/api/clients")
+async def clients_id():
+    """ 
+    EndPoint to get all clients id
+    """
+    
+    clients_id = df_clients_to_predict["SK_ID_CURR"].tolist()
+
+    return {"clientsId": clients_id}
 
 @app.get("/api/predictions/clients")
 async def predict(id: int):
@@ -215,53 +376,6 @@ async def explain(id: int):
     
     return client
 
-@app.get('/api/statistics/genders')
-async def get_stats_gender():
-
-    count_rows1 = df_clients_target.loc[(df_clients_target['CODE_GENDER'] == 0) & (df_clients_target['TARGET'] == 0)].shape[0]
-    count_rows2 = df_clients_target.loc[(df_clients_target['CODE_GENDER'] == 0) & (df_clients_target['TARGET'] == 1)].shape[0]
-    count_rows3 = df_clients_target.loc[(df_clients_target['CODE_GENDER'] == 1) & (df_clients_target['TARGET'] == 0)].shape[0]
-    count_rows4 = df_clients_target.loc[(df_clients_target['CODE_GENDER'] == 1) & (df_clients_target['TARGET'] == 1)].shape[0]
-
-    data = {'Gender': ['Men', 'Men', 'Women', 'Women'],
-            'Stats Loan': ['Repaid', 'Defaulted', 'Repaid', 'Defaulted'],
-            'Value': [count_rows1, count_rows2, count_rows3, count_rows4]}
-
-    df = pd.DataFrame(data)
-
-    return JSONResponse(content=df.to_dict(orient='records'), media_type="application/json")
-
-@app.get('/api/statistics/houses')
-async def get_stats_house():
-
-    count_rows1 = df_clients_target.loc[(df_clients_target['TARGET'] == 0) & (df_clients_target['FLAG_OWN_REALTY'] == 1)].shape[0]
-    count_rows2 = df_clients_target.loc[(df_clients_target['TARGET'] == 1) & (df_clients_target['FLAG_OWN_REALTY'] == 1)].shape[0]
-    count_rows3 = df_clients_target.loc[(df_clients_target['TARGET'] == 0) & (df_clients_target['FLAG_OWN_REALTY'] == 0)].shape[0]
-    count_rows4 = df_clients_target.loc[(df_clients_target['TARGET'] == 1) & (df_clients_target['FLAG_OWN_REALTY'] == 0)].shape[0]
-
-    data = {'Real State Property': ['Owns property', "Owns property", "Doesn't own property", "Doesn't own property"],
-            'Stats Loan': ['Repaid', 'Defaulted', 'Repaid', 'Defaulted'],
-            'Value': [count_rows1, count_rows2, count_rows3, count_rows4]}
-
-    df = pd.DataFrame(data)
-
-    return JSONResponse(content=df.to_dict(orient='records'), media_type="application/json")
-
-@app.get('/api/statistics/cars')
-async def get_stats_car():
-
-    count_rows1 = df_clients_target.loc[(df_clients_target['TARGET'] == 0) & (df_clients_target['FLAG_OWN_CAR'] == 1)].shape[0]
-    count_rows2 = df_clients_target.loc[(df_clients_target['TARGET'] == 1) & (df_clients_target['FLAG_OWN_CAR'] == 1)].shape[0]
-    count_rows3 = df_clients_target.loc[(df_clients_target['TARGET'] == 0) & (df_clients_target['FLAG_OWN_CAR'] == 0)].shape[0]
-    count_rows4 = df_clients_target.loc[(df_clients_target['TARGET'] == 1) & (df_clients_target['FLAG_OWN_CAR'] == 0)].shape[0]
-
-    data = {'Vehicle': ['Owns vehicle', "Owns vehicle", "Doesn't own vehicle", "Doesn't own vehicle"],
-            'Stats Loan': ['Repaid', 'Defaulted', 'Repaid', 'Defaulted'],
-            'Value': [count_rows1, count_rows2, count_rows3, count_rows4]}
-
-    df = pd.DataFrame(data)
-
-    return JSONResponse(content=df.to_dict(orient='records'), media_type="application/json")
 
 @app.get("/api/clients/similar_clients")
 async def similar_clients(id: int):
