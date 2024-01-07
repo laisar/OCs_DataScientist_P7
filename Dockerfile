@@ -4,6 +4,7 @@ FROM python:3.11.5-slim
 # copy files to the /app folder in the container
 COPY ./fastapi_predict.py /app/fastapi_predict.py
 COPY ./data/dataset_predict_compressed.gz /app/data/dataset_predict_compressed.gz
+COPY ./data/dataset_target_compressed.gz /app/data/dataset_target_compressed.gz
 COPY ./models/xgboost_classifier.pkl /app/models/xgboost_classifier.pkl
 COPY ./models/xgboost_shap_explainer.pkl /app/models/xgboost_shap_explainer.pkl
 COPY ./Pipfile /app/Pipfile

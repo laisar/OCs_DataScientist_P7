@@ -20,6 +20,7 @@ app = FastAPI(
 
 
 df_clients_to_predict = pd.read_csv("./data/dataset_predict_compressed.gz", compression='gzip', sep=',')
+df_clients_target = pd.read_csv("./data/dataset_target.compressed.gz", compression='gzip', sep=',')
 
 model = pickle.load(open("./models/xgboost_classifier.pkl", 'rb'))
 
@@ -40,6 +41,74 @@ async def clients_id():
     clients_id = df_clients_to_predict["SK_ID_CURR"].tolist()
 
     return {"clientsId": clients_id}
+
+@app.get("/api/clients/gender")
+async def clients_gender():
+    """ 
+    EndPoint to get client's gender
+    """
+
+    percentage_m = round((df_clients_target['CODE_GENDER'][df_clients_target['CODE_GENDER'] == 0].count() / len(df_clients_target)) * 100,2)
+    percentage_w = round((df_clients_target['CODE_GENDER'][df_clients_target['CODE_GENDER'] == 1].count() / len(df_clients_target)) * 100,2)
+
+    gender_information = {
+        
+        "percentage_m": percentage_m,
+        "percentage_w": percentage_w
+    }
+
+    return gender_information
+
+@app.get("/api/clients/repay")
+async def clients_repay():
+    """ 
+    EndPoint to get client's gender
+    """
+
+    repaid = round((df_clients_target['TARGET'][df_clients_target['TARGET'] == 0].count() / len(df_clients_target)) * 100,2)
+    defaulted = round((df_clients_target['TARGET'][df_clients_target['TARGET'] == 1].count()/ len(df_clients_target)) * 100,2)
+
+    repay_information = {
+        
+        "Repaid": repaid,
+        "Defaulted": defaulted
+    }
+
+    return repay_information
+
+@app.get("/api/clients/car")
+async def clients_car():
+    """ 
+    EndPoint to get client's gender
+    """
+
+    car = round((df_clients_target['FLAG_OWN_CAR'][df_clients_target['FLAG_OWN_CAR'] == 1].count() / len(df_clients_target)) * 100,2)
+    nocar = round((df_clients_target['FLAG_OWN_CAR'][df_clients_target['FLAG_OWN_CAR'] == 0].count()/ len(df_clients_target)) * 100,2)
+
+    car_information = {
+        
+        "Repaid": car,
+        "Defaulted": nocar
+    }
+
+    return car_information
+
+@app.get("/api/clients/house")
+async def clients_house():
+    """ 
+    EndPoint to get client's gender
+    """
+
+    house = round((df_clients_target['FLAG_OWN_REALTY'][df_clients_target['FLAG_OWN_REALTY'] == 1].count() / len(df_clients_target)) * 100,2)
+    nohouse = round((df_clients_target['FLAG_OWN_REALTY'][df_clients_target['FLAG_OWN_REALTY'] == 0].count()/ len(df_clients_target)) * 100,2)
+
+    house_information = {
+        
+        "Repaid": house,
+        "Defaulted": nohouse
+    }
+
+    return house_information
 
 
 @app.get("/api/predictions/clients")
@@ -146,6 +215,54 @@ async def explain(id: int):
     
     return client
 
+@app.get('/api/statistics/genders')
+async def get_stats_gender():
+
+    count_rows1 = df_clients_target.loc[(df_clients_target['CODE_GENDER'] == 0) & (df_clients_target['TARGET'] == 0)].shape[0]
+    count_rows2 = df_clients_target.loc[(df_clients_target['CODE_GENDER'] == 0) & (df_clients_target['TARGET'] == 1)].shape[0]
+    count_rows3 = df_clients_target.loc[(df_clients_target['CODE_GENDER'] == 1) & (df_clients_target['TARGET'] == 0)].shape[0]
+    count_rows4 = df_clients_target.loc[(df_clients_target['CODE_GENDER'] == 1) & (df_clients_target['TARGET'] == 1)].shape[0]
+
+    data = {'Gender': ['Men', 'Men', 'Women', 'Women'],
+            'Stats Loan': ['Repaid', 'Defaulted', 'Repaid', 'Defaulted'],
+            'Value': [count_rows1, count_rows2, count_rows3, count_rows4]}
+
+    df = pd.DataFrame(data)
+
+    return JSONResponse(content=df.to_dict(orient='records'), media_type="application/json")
+
+@app.get('/api/statistics/houses')
+async def get_stats_house():
+
+    count_rows1 = df_clients_target.loc[(df_clients_target['TARGET'] == 0) & (df_clients_target['FLAG_OWN_REALTY'] == 1)].shape[0]
+    count_rows2 = df_clients_target.loc[(df_clients_target['TARGET'] == 1) & (df_clients_target['FLAG_OWN_REALTY'] == 1)].shape[0]
+    count_rows3 = df_clients_target.loc[(df_clients_target['TARGET'] == 0) & (df_clients_target['FLAG_OWN_REALTY'] == 0)].shape[0]
+    count_rows4 = df_clients_target.loc[(df_clients_target['TARGET'] == 1) & (df_clients_target['FLAG_OWN_REALTY'] == 0)].shape[0]
+
+    data = {'Real State Property': ['Owns property', "Owns property", "Doesn't own property", "Doesn't own property"],
+            'Stats Loan': ['Repaid', 'Defaulted', 'Repaid', 'Defaulted'],
+            'Value': [count_rows1, count_rows2, count_rows3, count_rows4]}
+
+    df = pd.DataFrame(data)
+
+    return JSONResponse(content=df.to_dict(orient='records'), media_type="application/json")
+
+@app.get('/api/statistics/cars')
+async def get_stats_car():
+
+    count_rows1 = df_clients_target.loc[(df_clients_target['TARGET'] == 0) & (df_clients_target['FLAG_OWN_CAR'] == 1)].shape[0]
+    count_rows2 = df_clients_target.loc[(df_clients_target['TARGET'] == 1) & (df_clients_target['FLAG_OWN_CAR'] == 1)].shape[0]
+    count_rows3 = df_clients_target.loc[(df_clients_target['TARGET'] == 0) & (df_clients_target['FLAG_OWN_CAR'] == 0)].shape[0]
+    count_rows4 = df_clients_target.loc[(df_clients_target['TARGET'] == 1) & (df_clients_target['FLAG_OWN_CAR'] == 0)].shape[0]
+
+    data = {'Vehicle': ['Owns vehicle', "Owns vehicle", "Doesn't own vehicle", "Doesn't own vehicle"],
+            'Stats Loan': ['Repaid', 'Defaulted', 'Repaid', 'Defaulted'],
+            'Value': [count_rows1, count_rows2, count_rows3, count_rows4]}
+
+    df = pd.DataFrame(data)
+
+    return JSONResponse(content=df.to_dict(orient='records'), media_type="application/json")
+
 @app.get("/api/clients/similar_clients")
 async def similar_clients(id: int):
     """ 
@@ -229,6 +346,5 @@ async def get_global_shap(id: int):
 
     return client_shap
 
-#test
 if __name__ == "__main__":
-    uvicorn.run("fastapi_predict:app", reload=True, host="0.0.0.0", port=8000)
+    uvicorn.run("fastapi_predict:app", host="0.0.0.0", port=int(port), reload=False)
