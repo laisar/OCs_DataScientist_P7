@@ -20,7 +20,7 @@ app = FastAPI(
 
 
 df_clients_to_predict = pd.read_csv("./data/dataset_predict_compressed.gz", compression='gzip', sep=',')
-df_clients_target = pd.read_csv("./data/dataset_target.compressed.gz", compression='gzip', sep=',')
+df_clients_target = pd.read_csv("./data/dataset_target_compressed.gz", compression='gzip', sep=',')
 
 model = pickle.load(open("./models/xgboost_classifier.pkl", 'rb'))
 
