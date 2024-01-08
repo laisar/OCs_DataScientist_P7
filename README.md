@@ -75,7 +75,7 @@ The dashboard contains the following features:
 - It allows you to view descriptive information relating to a customer.
 - It allows you to compare descriptive information relating to a customer to all customers or to a group of similar customers.
 
-[Click here to access the dashboard](https://laisar.streamlit.app/)
+[Click here to access the Streamlit dashboard](https://laisar.streamlit.app/)
 
 
 
