@@ -19,7 +19,7 @@ import os
 #path = os.path.dirname(__file__)
 path1 = os.path.dirname(__file__)
 path = os.getcwd()
-logo = Image.open(path+"/images/logo.png")
+#logo = Image.open(path+"/images/logo.png")
 
 
 ########################################################
