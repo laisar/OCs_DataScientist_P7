@@ -20,7 +20,7 @@ import os
 path1 = os.path.dirname(__file__)
 path2 = os.path.abspath(os.path.join(path1, os.pardir))
 path = os.getcwd()
-#logo = Image.open(path2+"/images/logo.png")
+logo = Image.open(path2+"/images/logo.png")
 finalpath = path2+"/images/logo.png"
 
 ########################################################
