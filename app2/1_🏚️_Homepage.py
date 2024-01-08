@@ -30,7 +30,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-#st.write(str(path))
+st.write(str(path))
 ########################################################
 # Page information
 ########################################################
