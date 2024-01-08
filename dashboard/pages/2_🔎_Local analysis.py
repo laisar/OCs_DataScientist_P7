@@ -188,7 +188,7 @@ with tab1:
     data_fields = client_info.iloc[0].tolist()
     data = pd.DataFrame(list(zip(fields, data_fields)), columns=[str(selected_client), "Client information"])
     mygrid = make_grid(3,1)
-    path = 'images'
+    path = ''
     with mygrid[0][0]:
         
         mygrid2 = make_grid(1,3)
@@ -207,11 +207,11 @@ with tab1:
             # gender
             st.markdown('**Gender:**')
             if((data.loc[data[str(selected_client)] == "Gender", "Client information"] == "Woman").any()):             
-                my_file = path+'/woman.png'
+                my_file = path+'woman.png'
                 image = Image.open(my_file)
                 st.image(image, use_column_width=False, caption='Woman')
             else:
-                my_file = path+'/man.png'
+                my_file = path+'man.png'
                 image = Image.open(my_file)
                 st.image(image, use_column_width=False, caption='Man')
 
@@ -223,18 +223,18 @@ with tab1:
             #married
             st.markdown('**Marital status:**')
             if((data.loc[data[str(selected_client)] == "Married", "Client information"] == "Yes").any()):             
-                my_file = path+'/rings.png'
+                my_file = path+'rings.png'
                 image = Image.open(my_file)
                 st.image(image, use_column_width=False, caption='Is married')
             else:
-                my_file = path+'/rings.png'
+                my_file = path+'rings.png'
                 image = Image.open(my_file)
                 st.image(image, use_column_width=False, caption='Is not married')
                 
         with mygrid3[0][1]:
             #children
             st.markdown('**Has children:**')
-            my_file = path+'/child.png'
+            my_file = path+'child.png'
             image = Image.open(my_file)
             if((data.loc[data[str(selected_client)] == "Number of children", "Client information"] >=1).any()):
                 st.image(image, use_column_width=False, caption=f"Has {data[data[str(selected_client)] == 'Number of children']['Client information'].values[0]} children")    
@@ -245,7 +245,7 @@ with tab1:
         with mygrid3[0][2]:
             #job
             st.markdown('**Working status:**')
-            my_file = path+'/working.png'
+            my_file = path+'working.png'
             image = Image.open(my_file)
             if((data.loc[data[str(selected_client)] == "Working", "Client information"] == "Yes").any()):
                 st.image(image, use_column_width=False, caption='Has a job')
@@ -261,7 +261,7 @@ with tab1:
         with mygrid4[0][0]:
             #rent
             st.markdown('**Owns a real estate property:**')
-            my_file_house = path+'/house.png'
+            my_file_house = path+'house.png'
             image_house = Image.open(my_file_house)
             if((data.loc[data[str(selected_client)] == "Owns a real estate property", "Client information"] == "Yes").any()):
                 st.image(image_house, use_column_width=False, caption='Yes')
@@ -273,7 +273,7 @@ with tab1:
         with mygrid4[0][1]:
             #car
             st.markdown('**Owns a vehicle:**')
-            my_file_car = path+'/car.png'
+            my_file_car = path+'car.png'
             image_car = Image.open(my_file_car)
             if((data.loc[data[str(selected_client)] == "Owns a car", "Client information"] == "Yes").any()):
                 st.image(image_car, use_column_width=False, caption='Yes')

@@ -15,8 +15,8 @@ import os
 ########################################################
 # Loading images to the website
 ########################################################
-#icon = Image.open("images/favicon.ico")
-logo = Image.open("images/logo.png")
+#icon = Image.open("favicon.ico")
+logo = Image.open("logo.png")
 
 
 ########################################################
@@ -61,8 +61,8 @@ def get_gender():
 @st.cache_data 
 def plot_gender(data: dict):
 
-    image1 = Image.open("images/woman.png")
-    image2 = Image.open("images/man.png")
+    image1 = Image.open("woman.png")
+    image2 = Image.open("man.png")
 
     # Create a Matplotlib figure with two subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(5, 7))
@@ -95,8 +95,8 @@ def get_house():
 @st.cache_data 
 def plot_house(data: dict):
 
-    image1 = Image.open("images/house.png")
-    image2 = Image.open("images/rent.png")
+    image1 = Image.open("house.png")
+    image2 = Image.open("rent.png")
 
     # Create a Matplotlib figure with two subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(4, 4))
@@ -131,8 +131,8 @@ def get_car():
 @st.cache_data 
 def plot_car(data: dict):
 
-    image1 = Image.open("images/car.png")
-    image2 = Image.open("images/walk.png")
+    image1 = Image.open("car.png")
+    image2 = Image.open("walk.png")
 
     # Create a Matplotlib figure with two subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(4, 4))
@@ -263,8 +263,8 @@ def get_working():
 @st.cache_data 
 def plot_working(data: dict):
 
-    image1 = Image.open("images/working.png")
-    image2 = Image.open("images/unemployment.png")
+    image1 = Image.open("working.png")
+    image2 = Image.open("unemployment.png")
 
     # Create a Matplotlib figure with two subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(4, 4))
@@ -297,8 +297,8 @@ def get_married():
 @st.cache_data 
 def plot_married(data: dict):
 
-    image1 = Image.open("images/rings.png")
-    image2 = Image.open("images/single.png")
+    image1 = Image.open("rings.png")
+    image2 = Image.open("single.png")
 
     # Create a Matplotlib figure with two subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(4, 4))
@@ -331,8 +331,8 @@ def get_children():
 @st.cache_data 
 def plot_children(data: dict):
 
-    image1 = Image.open("images/father-and-son.png")
-    image2 = Image.open("images/parents.png")
+    image1 = Image.open("father-and-son.png")
+    image2 = Image.open("parents.png")
 
     # Create a Matplotlib figure with two subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(4, 4))
