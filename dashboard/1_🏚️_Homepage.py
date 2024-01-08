@@ -16,7 +16,8 @@ import os
 # Loading images to the website
 ########################################################
 #icon = Image.open("favicon.ico")
-logo = Image.open("logo.png")
+path = os.path.dirname(__file__)
+logo = Image.open(path+"/logo.png")
 
 
 ########################################################
@@ -39,7 +40,10 @@ st.markdown(st_title_hr, unsafe_allow_html=True)
 
 
 API_ADDRESS = 'https://fastapilaisar.azurewebsites.net'
-df_clients_target = pd.read_csv("dataset_target_compressed.gz", compression='gzip', sep=',')
+
+url_current = "https://github.com/laisar/OCs_DataScientist_P7/blob/master/dashboard/dataset_target_compressed.gz?raw=true"
+df_current_clients = pd.read_csv("dataset_target_compressed.gz", compression='gzip', sep=',')
+
 
 def make_grid(cols,rows):
     grid = [0]*cols
@@ -61,8 +65,8 @@ def get_gender():
 @st.cache_data 
 def plot_gender(data: dict):
 
-    image1 = Image.open("woman.png")
-    image2 = Image.open("man.png")
+    image1 = Image.open(path+"/woman.png")
+    image2 = Image.open(path+"/man.png")
 
     # Create a Matplotlib figure with two subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(5, 7))
@@ -95,8 +99,8 @@ def get_house():
 @st.cache_data 
 def plot_house(data: dict):
 
-    image1 = Image.open("house.png")
-    image2 = Image.open("rent.png")
+    image1 = Image.open(path+"/house.png")
+    image2 = Image.open(path+"/rent.png")
 
     # Create a Matplotlib figure with two subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(4, 4))
@@ -131,8 +135,8 @@ def get_car():
 @st.cache_data 
 def plot_car(data: dict):
 
-    image1 = Image.open("car.png")
-    image2 = Image.open("walk.png")
+    image1 = Image.open(path+"/car.png")
+    image2 = Image.open(path+"/walk.png")
 
     # Create a Matplotlib figure with two subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(4, 4))
@@ -263,8 +267,8 @@ def get_working():
 @st.cache_data 
 def plot_working(data: dict):
 
-    image1 = Image.open("working.png")
-    image2 = Image.open("unemployment.png")
+    image1 = Image.open(path+"/working.png")
+    image2 = Image.open(path+"/unemployment.png")
 
     # Create a Matplotlib figure with two subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(4, 4))
@@ -297,8 +301,8 @@ def get_married():
 @st.cache_data 
 def plot_married(data: dict):
 
-    image1 = Image.open("rings.png")
-    image2 = Image.open("single.png")
+    image1 = Image.open(path+"/rings.png")
+    image2 = Image.open(path+"/single.png")
 
     # Create a Matplotlib figure with two subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(4, 4))
@@ -331,8 +335,8 @@ def get_children():
 @st.cache_data 
 def plot_children(data: dict):
 
-    image1 = Image.open("father-and-son.png")
-    image2 = Image.open("parents.png")
+    image1 = Image.open(path+"/father-and-son.png")
+    image2 = Image.open(path+"/parents.png")
 
     # Create a Matplotlib figure with two subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(4, 4))
