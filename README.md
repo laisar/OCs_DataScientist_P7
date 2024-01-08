@@ -22,26 +22,42 @@ The company therefore wishes to develop a classification algorithm based on vari
 
 ------------
 
-    ├── README.md
+    ├── .github                                      <- Github actions .yml
     │
-    ├── datadrift                <- Datadrift report
+    ├── data                                         <- Datasets
     │
-    ├── fastAPI                  <- FastAPI related files
+    ├── datadrift                                    <- Datadrift report
     │
-    ├── models                   <- LightGBM and SHAP explainer
+    ├── models                                       <- XGBoost model and SHAP explainer
     │
-    ├── streamlit                <- Dashboard related files
+    ├── notebooks                                    <- Created notebooks
     │
-    │   ├── images               <- Images used in dashboard
-    │   ├── pages                <- Dashboard pages
+    ├── streamlit_app                                <- Dashboard related files
+    │
+    │   ├── images                                   <- Images used in dashboard
+    │   ├── pages                                    <- Dashboard pages
+    |   ├── dataset_target_streamlit_compressed.gz   <- Images used in dashboard
+    │   ├── requirements.txt                         <- Streamlit requirements
     |
-    ├── dataset_predict.csv      <- Dataset with Target NaNs  
+    ├── tests                                        <- Test script 
+    |
+    ├── fastapi_predict.py                           <- FastAPI script  
     │
-    ├── dataset_target.csv       <- Dataset used to modelling
+    ├── .dockerignore           
     │
-    ├── modelling.ipynb          <- Modelling python code
+    ├── .gitattributes          
     │
-    ├── preprocessing.ipynb      <- Preprocessing python code
+    ├── .gitignore      
+    |
+    ├── Dockerfile                                  <- Dockerfile with commands to create image to run API  
+    │
+    ├── Pipfile           
+    │
+    ├── Pipfile.lock          
+    │
+    ├── README.md      
+    │
+    ├── fastapi_predict.py                         <- FastAPI script
 
 ## **Dashboard**
 
