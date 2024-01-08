@@ -231,6 +231,7 @@ with tab1:
             else:
                 my_file = path+'/rings.png'
                 image = Image.open(my_file)
+                image = image.convert('L')
                 st.image(image, use_column_width=False, caption='Is not married')
                 
         with mygrid3[0][1]:
