@@ -16,7 +16,7 @@ The company therefore wishes to develop a classification algorithm based on vari
 3. Put the prediction scoring model into production using an API, as well as the interactive dashboard that calls the API for predictions.
 
 * For detailed information in French about the project, required deliverables, and evaluation criteria [click here](https://drive.google.com/file/d/1kiqlS2SoUQB9ncG0wrmKFuKfOJxZQVk7/view?usp=sharing).
-* The original data used in the project can be downloaded from [Kaggle](https://www.kaggle.com/c/home-credit-default-risk/data)
+* The original data used in the project can be downloaded from [Kaggle](https://www.kaggle.com/c/home-credit-default-risk/data?usp=sharing)
 
 ## **Project organization**
 
@@ -65,7 +65,7 @@ The company therefore wishes to develop a classification algorithm based on vari
 
 FastAPI was used to build the API. Microsoft Azure was used to deploy the API: using a container and a web app. 
 
-[Click here to access the API](https://fastapilaisar.azurewebsites.net/docs)
+[Click here to access the API](https://fastapilaisar.azurewebsites.net/docs?usp=sharing)
 
 ## **Dashboard**
 
@@ -75,7 +75,7 @@ The dashboard contains the following features:
 - It allows you to view descriptive information relating to a customer.
 - It allows you to compare descriptive information relating to a customer to all customers or to a group of similar customers.
 
-[Click here to access the dashboard](https://laisar.streamlit.app/)
+[Click here to access the dashboard](https://laisar.streamlit.app/?usp=sharing)
 
 
 
