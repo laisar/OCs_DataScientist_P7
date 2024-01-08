@@ -11,7 +11,7 @@ The company therefore wishes to develop a classification algorithm based on vari
 
 ## **Mission**
 
-1. Build a scoring model that will automatically predict a customer's probability of bankruptcy.
+1. Build a scoring model that will automatically predict a customer's probability of repaying a loan.
 2. Build an interactive dashboard for customer relationship managers to interpret the predictions made by the model, and to improve the customer knowledge of customer relationship managers.
 3. Put the prediction scoring model into production using an API, as well as the interactive dashboard that calls the API for predictions.
 
@@ -58,6 +58,14 @@ The company therefore wishes to develop a classification algorithm based on vari
     ├── README.md      
     │
     ├── fastapi_predict.py                         <- FastAPI script
+    │
+    ├── requirements.txt                           <- Required modules for modelling, fastAPI and streamlit development
+
+## **API**
+
+FastAPI was used to build the API. Microsoft Azure was used to deploy the API: using a container and a web app. 
+
+[Click here to access the API](https://fastapilaisar.azurewebsites.net/docs)
 
 ## **Dashboard**
 
@@ -67,7 +75,7 @@ The dashboard contains the following features:
 - It allows you to view descriptive information relating to a customer.
 - It allows you to compare descriptive information relating to a customer to all customers or to a group of similar customers.
 
-Click here to access the dashboard
+[Click here to access the dashboard](https://laisar.streamlit.app/)
 
 
 
