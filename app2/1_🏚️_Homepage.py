@@ -38,10 +38,16 @@ folders_in_directory = list_folders(path1)
 st.write(str(path1))
 st.write(str(path))
 st.write(str(finalpath))
+
 print("Folders in", path1, "are:")
 for folder in folders_in_directory:
     st.write(folder)
     st.write("\n")
+files = os.listdir(path1)
+
+# Print the list of files
+for file in files:
+    st.write(file)
 ########################################################
 # Page information
 ########################################################
@@ -69,7 +75,7 @@ with mygrid[0][0]:
 
     left_co, cent_co,last_co = st.columns(3)
     with cent_co:
-        #st.image(logo, width=200) 
+        st.image(logo, width=200) 
         st.write("test") 
 
 with mygrid[1][0]:

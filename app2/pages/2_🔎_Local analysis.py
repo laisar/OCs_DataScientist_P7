@@ -60,7 +60,7 @@ with mygrid[0][0]:
 
     left_co, cent_co,last_co = st.columns(3)
     with cent_co:
-        #st.image(logo, width=200) 
+        st.image(logo, width=200) 
         st.write("test") 
 
 with mygrid[1][0]:
