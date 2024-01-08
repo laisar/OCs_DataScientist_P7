@@ -17,6 +17,7 @@ import os
 ########################################################
 #icon = Image.open("favicon.ico")
 #path = os.path.dirname(__file__)
+path1 = os.path.dirname(__file__)
 path = os.getcwd()
 logo = Image.open(path+"/images/logo.png")
 
@@ -30,6 +31,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+st.write(str(path1))
 st.write(path)
 ########################################################
 # Page information
