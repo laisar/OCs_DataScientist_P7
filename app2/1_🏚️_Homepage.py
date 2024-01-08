@@ -60,7 +60,7 @@ st.markdown(st_title_hr, unsafe_allow_html=True)
 API_ADDRESS = 'https://fastapilaisar.azurewebsites.net'
 
 url_current = "https://github.com/laisar/OCs_DataScientist_P7/blob/master/app2/dataset_target_streamlit_compressed.gz?raw=true"
-df_clients_target = pd.read_csv(url_current, compression='gzip', sep=',')
+df_clients_target = pd.read_csv(path1+"/dataset_target_streamlit_compressed.gz", compression='gzip', sep=',')
 
 
 def make_grid(cols,rows):
