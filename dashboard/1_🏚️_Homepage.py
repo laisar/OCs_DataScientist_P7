@@ -17,7 +17,7 @@ import os
 ########################################################
 #icon = Image.open("favicon.ico")
 path = os.path.dirname(__file__)
-logo = Image.open("logo.png")
+logo = Image.open(path+"/logo.png")
 
 
 ########################################################
