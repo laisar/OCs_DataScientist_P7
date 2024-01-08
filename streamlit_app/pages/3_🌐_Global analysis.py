@@ -195,7 +195,7 @@ with tab1:
 
     df_clients['SK_ID_CURR'] = df_clients['SK_ID_CURR'].astype(str)
     df_clients['CODE_GENDER'] = df_clients['CODE_GENDER'].replace({0: "Man", 1: "Woman"})
-    df_clients['REPAY'] = df_clients['REPAY'].replace({False: "Defaulted", True: "Repaid"})
+    df_clients['REPAY'] = df_clients['REPAY'].replace({False: "Default", True: "Repay"})
     df_clients['NAME_FAMILY_STATUS_Married'] = df_clients['NAME_FAMILY_STATUS_Married'].replace({False: "Not married", True: "Married"})
     df_clients['NAME_INCOME_TYPE_Working'] = df_clients['NAME_INCOME_TYPE_Working'].replace({True: "Has a job", False: "Doesn't have a job"})
     df_clients['FLAG_OWN_CAR'] = df_clients['FLAG_OWN_CAR'].replace({1: "Has a vehicle", 0: "Doesn't have a vehicle"})
