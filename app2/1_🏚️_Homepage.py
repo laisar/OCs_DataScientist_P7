@@ -41,7 +41,7 @@ st.markdown(st_title_hr, unsafe_allow_html=True)
 
 API_ADDRESS = 'https://fastapilaisar.azurewebsites.net'
 
-df_clients_target = pd.read_csv("dataset_target_compressed.gz", compression='gzip', sep=',')
+df_clients_target = pd.read_csv(path+"/dataset_target_compressed.gz", compression='gzip', sep=',')
 
 
 def make_grid(cols,rows):
