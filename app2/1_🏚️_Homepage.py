@@ -18,8 +18,8 @@ import os
 #icon = Image.open("favicon.ico")
 path1 = os.path.dirname(__file__)
 path = os.getcwd()
-#logo = Image.open(path+"/images/logo.png")
-
+#logo = Image.open(path1+"/images/logo.png")
+finalpath = path1+"/images/logo.png"
 
 ########################################################
 # General settings
@@ -30,8 +30,18 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+def list_folders(directory):
+    folders = [f for f in os.listdir(directory) if os.path.isdir(os.path.join(directory, f))]
+    return folders
+folders_in_directory = list_folders(path1)
+
 st.write(str(path1))
 st.write(str(path))
+st.write(str(finalpath))
+print("Folders in", path1, "are:")
+for folder in folders_in_directory:
+    st.write(folder)
+    st.write("\n")
 ########################################################
 # Page information
 ########################################################
