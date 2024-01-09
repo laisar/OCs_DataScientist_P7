@@ -287,8 +287,8 @@ with tab1:
                         ])
         with tab9:
         # Display the histogram using Streamlit
-            values1 = df2["EXT_SOURCE_2"].mean()
-            values2 = df2["EXT_SOURCE_3"].mean()
+            values1 = round(df2["EXT_SOURCE_2"].mean(),2)
+            values2 = round(df2["EXT_SOURCE_3"].mean(),2)
             df_bar = {
                 'EXT_SOURCE_MEAN': ['EXT_SOURCE_2', 'EXT_SOURCE_3'],
                 'Values': [values1, values2]
@@ -302,8 +302,8 @@ with tab1:
             st.plotly_chart(fig, use_container_width=True)
 
         with tab10:
-            values1 = df1["EXT_SOURCE_2"].mean()
-            values2 = df1["EXT_SOURCE_3"].mean()
+            values1 = round(df1["EXT_SOURCE_2"].mean(),2)
+            values2 = round(df1["EXT_SOURCE_3"].mean(),2)
             df_bar = {
                 'EXT_SOURCE_MEAN': ['EXT_SOURCE_2', 'EXT_SOURCE_3'],
                 'Values': [values1, values2]

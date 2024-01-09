@@ -326,12 +326,12 @@ with tab1:
         with mygrid7[0][1]:
 
             st.markdown('**Source 2:**')
-            st.write(f"{data[data[str(selected_client)] == 'Source 2 (%)']['Client information'].values[0]} %")
+            st.write(f"{round(data[data[str(selected_client)] == 'Source 2 (%)']['Client information'].values[0],2)}")
 
         with mygrid7[0][2]:
 
             st.markdown('**Source 3:**')
-            st.write(f"{data[data[str(selected_client)] == 'Source 3 (%)']['Client information'].values[0]} %")
+            st.write(f"{round(data[data[str(selected_client)] == 'Source 3 (%)']['Client information'].values[0],2)}")
 
 
 with tab2:

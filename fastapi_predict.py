@@ -329,8 +329,8 @@ async def client_info(id: int):
         "Credit amount repaied per year": round(client['AMT_ANNUITY'].values[0]),
         "Client anual income": round(client['AMT_INCOME_TOTAL'].values[0]),
         "Payment rate (%)": round(client['PAYMENT_RATE'].values[0]*100),
-        "Source 2 (%)": round(client['EXT_SOURCE_2'].values[0]),
-        "Source 3 (%)": round(client['EXT_SOURCE_3'].values[0]),
+        "Source 2 (%)": client['EXT_SOURCE_2'].values[0],
+        "Source 3 (%)": client['EXT_SOURCE_3'].values[0],
         "Gender": "Man" if int(client['CODE_GENDER'].values[0]) == 0 else "Woman",
         "Age": round(abs(client['DAYS_BIRTH'].values[0]/365)),
         "Married": "No" if int(client['NAME_FAMILY_STATUS_Married'].values[0]) == 0 else "Yes",
@@ -401,8 +401,8 @@ async def similar_clients(id: int, k: int):
         df_similar_clients['AMT_ANNUITY'] = round(df_similar_clients['AMT_ANNUITY'])
         df_similar_clients['AMT_INCOME_TOTAL'] = round(df_similar_clients['AMT_INCOME_TOTAL'])
         df_similar_clients['PAYMENT_RATE'] = round(df_similar_clients['PAYMENT_RATE']*100)
-        df_similar_clients['EXT_SOURCE_2'] = round(df_similar_clients['EXT_SOURCE_2'])
-        df_similar_clients['EXT_SOURCE_3'] = round(df_similar_clients['EXT_SOURCE_3'])
+        df_similar_clients['EXT_SOURCE_2'] = df_similar_clients['EXT_SOURCE_2']
+        df_similar_clients['EXT_SOURCE_3'] = df_similar_clients['EXT_SOURCE_3']
         df_similar_clients['AGE'] = abs(round(df_similar_clients['DAYS_BIRTH']/365))
         df_similar_clients['YEARS_EMPLOYED'] = abs(round(df_similar_clients['DAYS_EMPLOYED']/365))
 
