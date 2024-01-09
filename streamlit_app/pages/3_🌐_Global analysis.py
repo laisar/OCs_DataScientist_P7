@@ -67,11 +67,11 @@ def plot_shap(data: dict):
 
     df = pd.DataFrame({'Features': data.keys(), 'Importance': data.values()})
     df['Color'] = df['Importance'].apply(lambda x: 'Positive' if x >= 0 else 'Negative')
+    df = df.sort_values(by='Importance', ascending=True)
 
     colors = {'Positive': 'limegreen', 'Negative': 'orangered'}
 
     fig = px.bar(df, x='Importance', y='Features', color='Color', color_discrete_map=colors)
-    fig.update_layout(barmode='group', xaxis={'categoryorder': 'total descending'})
     fig.update_layout(height=800, width=800) 
     st.plotly_chart(fig, use_container_width=True)
 
@@ -205,7 +205,7 @@ with tab1:
 
     st.write(df_filtered)
 
-    mygrid = make_grid(2, 2)
+    mygrid = make_grid(3, 2)
 
     with mygrid[0][0]:
         st.markdown('**Loan repayment distribution:**')
@@ -226,19 +226,95 @@ with tab1:
     with mygrid[1][0]:
         st.markdown('**Anual income distribution:**')
         # Create histogram using Plotly Express
-        fig = px.histogram(df_filtered, x='AMT_INCOME_TOTAL')
-
+        df1 = df_filtered[df_filtered["REPAY"] == "Default"].reset_index(drop=True)
+        df2 = df_filtered[df_filtered["REPAY"] == "Repay"].reset_index(drop=True)
+        fig1 = px.histogram(df1, x='AMT_INCOME_TOTAL', color_discrete_sequence=['orangered'])
+        fig2 = px.histogram(df2, x='AMT_INCOME_TOTAL', color_discrete_sequence=['limegreen'])
+        #fig = px.histogram(df_filtered, x='AMT_INCOME_TOTAL')
+        tab3, tab4 = st.tabs(['Prediction: Repay', 
+                            'Prediction: Default'
+                        ])
+        with tab3:
         # Display the histogram using Streamlit
-        st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig2, use_container_width=True)
+        with tab4:
+            st.plotly_chart(fig1, use_container_width=True)
+
 
     with mygrid[1][1]:
         st.markdown('**Total credit amount distribution:**')
         # Create histogram using Plotly Express
-        fig = px.histogram(df_filtered, x='AMT_CREDIT')
-
+        df1 = df_filtered[df_filtered["REPAY"] == "Default"].reset_index(drop=True)
+        df2 = df_filtered[df_filtered["REPAY"] == "Repay"].reset_index(drop=True)
+        fig1 = px.histogram(df1, x='AMT_CREDIT', color_discrete_sequence=['orangered'])
+        fig2 = px.histogram(df2, x='AMT_CREDIT', color_discrete_sequence=['limegreen'])
+        #fig = px.histogram(df_filtered, x='AMT_INCOME_TOTAL')
+        tab5, tab6 = st.tabs(['Prediction: Repay', 
+                            'Prediction: Default'
+                        ])
+        with tab5:
         # Display the histogram using Streamlit
-        st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig2, use_container_width=True)
+        with tab6:
+            st.plotly_chart(fig1, use_container_width=True)
 
+    with mygrid[2][0]:
+        st.markdown('**Credit amount repaied per year:**')
+        # Create histogram using Plotly Express
+        df1 = df_filtered[df_filtered["REPAY"] == "Default"].reset_index(drop=True)
+        df2 = df_filtered[df_filtered["REPAY"] == "Repay"].reset_index(drop=True)
+        fig1 = px.histogram(df1, x='AMT_ANNUITY', color_discrete_sequence=['orangered'])
+        fig2 = px.histogram(df2, x='AMT_ANNUITY', color_discrete_sequence=['limegreen'])
+        #fig = px.histogram(df_filtered, x='AMT_INCOME_TOTAL')
+        tab7, tab8 = st.tabs(['Prediction: Repay', 
+                            'Prediction: Default'
+                        ])
+        with tab7:
+        # Display the histogram using Streamlit
+            st.plotly_chart(fig2, use_container_width=True)
+        with tab8:
+            st.plotly_chart(fig1, use_container_width=True)
+
+
+    with mygrid[2][1]:
+        st.markdown('**Average normalized scores from external data sources:**')
+        # Create histogram using Plotly Express
+        df1 = df_filtered[df_filtered["REPAY"] == "Default"].reset_index(drop=True)
+        df2 = df_filtered[df_filtered["REPAY"] == "Repay"].reset_index(drop=True)
+
+        tab9, tab10 = st.tabs(['Prediction: Repay', 
+                            'Prediction: Default'
+                        ])
+        with tab9:
+        # Display the histogram using Streamlit
+            values1 = df2["EXT_SOURCE_2"].mean()
+            values2 = df2["EXT_SOURCE_3"].mean()
+            df_bar = {
+                'EXT_SOURCE_MEAN': ['EXT_SOURCE_2', 'EXT_SOURCE_3'],
+                'Values': [values1, values2]
+            }
+            colors = ['limegreen', 'limegreen']
+            fig = px.bar(df_bar, x='EXT_SOURCE_MEAN', y='Values', color='EXT_SOURCE_MEAN', color_discrete_sequence=colors)
+            fig.update_layout(
+                showlegend=False
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+
+        with tab10:
+            values1 = df1["EXT_SOURCE_2"].mean()
+            values2 = df1["EXT_SOURCE_3"].mean()
+            df_bar = {
+                'EXT_SOURCE_MEAN': ['EXT_SOURCE_2', 'EXT_SOURCE_3'],
+                'Values': [values1, values2]
+            }
+            colors = ['orangered', 'orangered']
+            fig = px.bar(df_bar, x='EXT_SOURCE_MEAN', y='Values', color='EXT_SOURCE_MEAN', color_discrete_sequence=colors)
+            fig.update_layout(
+                showlegend=False
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
     
 with tab2:
 
