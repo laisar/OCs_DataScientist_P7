@@ -39,7 +39,7 @@ st_title_hr = '<hr style="background-color:#F0F2F6; width:60%; text-align:left; 
 st.markdown(st_title, unsafe_allow_html=True)
 st.markdown(st_title_hr, unsafe_allow_html=True)
 
-API_ADDRESS = 'http://127.0.0.1:8000/'
+API_ADDRESS = 'https://fastapilaisar.azurewebsites.net/'
 
 
 def make_grid(cols,rows):
