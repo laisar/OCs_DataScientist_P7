@@ -17,7 +17,7 @@ app = FastAPI(
 )
 
 # load environment variables
-#port = os.environ["PORT"]
+port = os.environ["PORT"]
 
 df_clients_to_predict = pd.read_csv("./data/dataset_predict_compressed.gz", compression='gzip', sep=',')
 df_clients_target = pd.read_csv("./data/dataset_target_compressed.gz", compression='gzip', sep=',')
