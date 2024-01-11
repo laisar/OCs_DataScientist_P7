@@ -12,6 +12,13 @@ import joblib
 import shap
 import numpy as np
 import os
+import shap
+from pandas.api.types import (
+    is_categorical_dtype,
+    is_datetime64_any_dtype,
+    is_numeric_dtype,
+    is_object_dtype,
+)
 
 ########################################################
 # General settings
@@ -32,7 +39,7 @@ st_title_hr = '<hr style="background-color:#F0F2F6; width:60%; text-align:left; 
 st.markdown(st_title, unsafe_allow_html=True)
 st.markdown(st_title_hr, unsafe_allow_html=True)
 
-API_ADDRESS = 'https://fastapilaisar.azurewebsites.net/'
+API_ADDRESS = 'http://127.0.0.1:8000/'
 
 
 def make_grid(cols,rows):
@@ -127,6 +134,16 @@ def get_client_shap_values(id):
         st.error('Failed to get clients')
         return None
 
+def get_client_explain(id):
+    response = requests.get(API_ADDRESS + f'api/clients/client?id={id}')
+    if response.status_code == 200: 
+        data = response.json()
+        data = pd.DataFrame(data)
+        return data
+    else:
+        st.error('Failed to get clients')
+        return None
+
 def get_model_shap_values(id):
     response = requests.get(API_ADDRESS + f'/api/clients/prediction/shap/global?id={id}')
     if response.status_code == 200: 
@@ -136,16 +153,12 @@ def get_model_shap_values(id):
         st.error('Failed to get clients')
         return None
 
-def plot_shap(data: dict):
+def plot_shap(shap_client: dict):
 
-    df = pd.DataFrame({'Features': data.keys(), 'Importance': data.values()})
-    df['Color'] = df['Importance'].apply(lambda x: 'Positive' if x >= 0 else 'Negative')
-
-    colors = {'Positive': 'limegreen', 'Negative': 'orangered'}
-
-    fig = px.bar(df, x='Importance', y='Features', color='Color', color_discrete_map=colors)
-    fig.update_layout(barmode='group', xaxis={'categoryorder': 'total descending'})
-    st.plotly_chart(fig, use_container_width=True)
+    force_plot = shap.force_plot(shap_client['values'], 
+                    np.array(shap_client['base_values']), shap_client['features'],
+                matplotlib=True)
+    st.pyplot(force_plot)
 
 tab1, tab2, tab3 = st.tabs(['👥 Client information', 
                             '🎯 Client score', 
@@ -377,5 +390,11 @@ with tab3:
 
     st.markdown('**See local feature importance below:**')
 
+    df_client_shap = get_client_explain(selected_client)
     client_values = get_client_shap_values(selected_client)
     plot_shap(client_values)
+    selected_columns = st.multiselect("Select features to display", df_client_shap.columns)
+
+    # Display the selected columns
+    st.markdown('**Selected features:**')
+    st.dataframe(df_client_shap[selected_columns])

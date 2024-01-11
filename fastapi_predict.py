@@ -17,7 +17,7 @@ app = FastAPI(
 )
 
 # load environment variables
-port = os.environ["PORT"]
+#port = os.environ["PORT"]
 
 df_clients_to_predict = pd.read_csv("./data/dataset_predict_compressed.gz", compression='gzip', sep=',')
 df_clients_target = pd.read_csv("./data/dataset_target_compressed.gz", compression='gzip', sep=',')
@@ -25,8 +25,8 @@ df_clients_target = pd.read_csv("./data/dataset_target_compressed.gz", compressi
 model = pickle.load(open("./models/xgboost_classifier.pkl", 'rb'))
 
 # Load shap model
-lgbm_shap = pickle.load(open("./models/xgboost_shap_explainer.pkl", 'rb'))
-shap_values = lgbm_shap.shap_values(df_clients_to_predict.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"]))
+xgboost_shap = pickle.load(open("./models/xgboost_shap_explainer.pkl", 'rb'))
+shap_values = xgboost_shap.shap_values(df_clients_to_predict.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"]))
 
 @app.get("/")
 def read_root():
@@ -420,22 +420,10 @@ async def get_local_shap(id: int):
         raise HTTPException(status_code=404, detail='Client id not found')
     else:
         idx = int(list(df_clients_to_predict[df_clients_to_predict['SK_ID_CURR'] == id].index.values)[0])
+        return {'values': xgboost_shap.expected_value.tolist(),
+                'base_values': shap_values[idx].tolist(),
+                'features': df_clients_to_predict[df_clients_to_predict['SK_ID_CURR']==id].drop(columns=["SK_ID_CURR", "TARGET", "REPAY"]).columns.tolist()}
 
-        shap_values_idx = shap_values[idx]
-        shap_values_abs_sum = np.abs(shap_values_idx)
-        top_feature_indices = np.argsort(shap_values_abs_sum)[-10:]
-        top_feature_names = df_clients_to_predict.drop(columns=["SK_ID_CURR", "TARGET", "REPAY"]).columns[top_feature_indices]
-        top_feature_shap_values = shap_values_idx[top_feature_indices]
-
-
-    client_shap = {}
-
-    for i in range(0, 10):
-        feature_name = str(top_feature_names[i])  # Ensure the feature name is a string
-        shap_value = float(top_feature_shap_values[i])  # Convert Shapley value to float
-        client_shap[feature_name] = shap_value
-
-    return client_shap
 
 @app.get('/api/clients/prediction/shap/global')
 async def get_global_shap(id: int):
