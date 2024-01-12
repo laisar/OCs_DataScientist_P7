@@ -5,7 +5,7 @@ import pytest
 @pytest.fixture(scope='module')
 def data_train():
     """Get customers processed train data to feed into the tests"""
-    return pd.read_csv("./data/dataset_predict_compressed.gz", compression='gzip', sep=',')
+    return pd.read_csv("./data/dataset_target_compressed.gz", compression='gzip', sep=',')
 
 @pytest.fixture(scope='module')
 def data_test():
@@ -28,7 +28,7 @@ def test_train_target_col(data_train):
 
 def test_train_test_sizes(data_train, data_test):
     """Check that train and test dataframe have the same columns (but target and repay)"""
-    train_size = data_train.drop(columns=["TARGET", "REPAY"]).shape[1]
+    train_size = data_train.drop(columns=["TARGET"]).shape[1]
     test_size = data_test.drop(columns=["TARGET", "REPAY"]).shape[1]
     assert train_size == test_size
 
