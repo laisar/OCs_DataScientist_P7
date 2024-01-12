@@ -36,7 +36,7 @@ The company therefore wishes to develop a classification algorithm based on vari
     │
     │   ├── images                                   <- Images used in dashboard
     │   ├── pages                                    <- Dashboard pages
-    |   ├── dataset_target_streamlit_compressed.gz   <- Images used in dashboard
+    |   ├── dataset_target_streamlit_compressed.gz   <- Dataset used for current clients
     │   ├── requirements.txt                         <- Streamlit requirements
     |
     ├── tests                                        <- Test script 
